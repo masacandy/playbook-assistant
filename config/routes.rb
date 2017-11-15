@@ -3,7 +3,9 @@ Rails.application.routes.draw do
   root to: 'top#index'
   namespace :api do
     namespace :v1 do
-      resources :test, only: :index
+      if Rails.env.development?
+        resources :test, only: :index
+      end
     end
   end
 end
