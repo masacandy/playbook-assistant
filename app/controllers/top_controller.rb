@@ -1,3 +1,5 @@
 class TopController < ApplicationController
-  def index; end
+  def index
+    gon.comments = [{ comment: 'this is first', number: 3 }]
+  end
 end

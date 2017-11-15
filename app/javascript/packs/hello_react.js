@@ -6,6 +6,23 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 
+class SubmittedMessage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: this.props.message,
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>{this.state.message}</h2>
+      </div>
+    )
+  }
+}
+
 const Message = () => {
   return (
     <div> yay </div>
@@ -19,22 +36,45 @@ class ButtonTest extends React.Component {
     this.state = {
       num: 0,
       textValue: 'text',
-    }
-    this.changeText = this.changeText.bind(this)
+      submitted: [],
+    };
+
+    this.changeText = this.changeText.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEnter = this.handleEnter.bind(this);
   }
 
-  changeText(e) {
+  changeText(event) {
     this.setState({
-      num: this.num + 1,
-      textValue: e.target.value
+      textValue: event.target.value,
     });
+  }
+
+  handleSubmit(event) {
+    const array = this.state.submitted
+    array.push(this.state.textValue);
+    this.setState({
+      submitted: array,
+    });
+  }
+
+  handleEnter(event) {
+    if (event.key === "Enter") {
+      console.log(event.key === "Enter");
+      this.handleSubmit();
+    }
   }
 
   render() {
     const messages = [];
+    const submittedMessages = [];
 
     for (var i = 0; i < this.state.num; i += 1) {
       messages.push(<Message />)
+    }
+
+    for (var i = 0; i <this.state.submitted.length; i +=1) {
+      submittedMessages.push(<SubmittedMessage message={this.state.submitted[i]} />)
     }
 
     return (
@@ -48,7 +88,13 @@ class ButtonTest extends React.Component {
         <button onClick={() => this.setState({ num: this.state.num + 1})}>
           Add Message
         </button>
-        <input type="text" value={this.state.textValue} onChange={this.changeText} />
+        <div>
+          {submittedMessages}
+        </div>
+        <input type="text" value={this.state.textValue} onChange={this.changeText} onKeyPress={this.handleEnter}  />
+        <button onClick={this.handleSubmit}>
+          Submit
+        </button>
       </div>
     )
   }
@@ -60,7 +106,7 @@ class Hello extends React.Component {
     this.state = {
       name: this.props.name,
     }
-    this.changeNames = this.changeNames.bind(this)
+    this.changeNames = this.changeNames.bind(this);
   }
 
   changeNames() {
