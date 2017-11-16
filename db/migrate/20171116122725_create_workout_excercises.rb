@@ -4,6 +4,7 @@ class CreateWorkoutExcercises < ActiveRecord::Migration[5.1]
       t.integer :workout_id, null: false
       t.integer :excercise_id, null: false
       t.integer :rep, null: false
+      t.integer :set, null: false
       t.integer :sort, null: false
 
       t.timestamps
