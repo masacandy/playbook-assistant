@@ -36,5 +36,10 @@ module PlaybookAssistant
 
     # https://schneems.com/2017/11/08/80-smaller-rails-footprint-with-rack-deflate/
     config.middleware.insert_after ActionDispatch::Static, Rack::Deflater
+
+    # ajax authentication
+    # https://stackoverflow.com/questions/9901781/how-to-handle-devises-authenticate-user-with-ajax-call
+    config.http_authenticatable_on_xhr = false
+    config.navigational_formats = [:"*/*", "*/*", :html, :js]
   end
 end

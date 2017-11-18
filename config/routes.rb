@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       if Rails.env.development?
         resources :test, only: %i[index]
       end
+      resources :workout_messages, only: %[index]
     end
   end
 

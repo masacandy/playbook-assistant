@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :menus, through: :user_menus
   has_many :workouts
   has_many :user_exercise_logs
+  has_many :user_last_exercise_logs
 
   protected
 

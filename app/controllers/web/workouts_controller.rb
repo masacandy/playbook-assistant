@@ -1,6 +1,7 @@
 class Web::WorkoutsController < Web::BaseController
   def show
     @workout = Workout.find(params[:id])
+    gon.workout_id = params[:id]
   end
 
   def create

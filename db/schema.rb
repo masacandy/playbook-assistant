@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171116125129) do
+ActiveRecord::Schema.define(version: 20171118114011) do
 
   create_table "exercises", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string "name", null: false
@@ -49,6 +49,16 @@ ActiveRecord::Schema.define(version: 20171116125129) do
     t.index ["user_id", "workout_id", "exercise_id"], name: "user_exercise_logs_index_on_u_w_e"
   end
 
+  create_table "user_last_exercise_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "user_id", null: false
+    t.integer "exercise_id", null: false
+    t.float "weight", limit: 24, null: false
+    t.boolean "weight_up", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "exercise_id"], name: "index_user_last_exercise_logs_on_user_id_and_exercise_id"
+  end
+
   create_table "user_menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "user_id", null: false
     t.integer "menu_id", null: false
@@ -79,10 +89,20 @@ ActiveRecord::Schema.define(version: 20171116125129) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "workout_messages", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "workout_id", null: false
+    t.string "message", null: false
+    t.integer "message_type", limit: 1, null: false
+    t.integer "parent_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["workout_id", "parent_id"], name: "index_workout_messages_on_workout_id_and_parent_id", unique: true
+  end
+
   create_table "workouts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "user_id", null: false
     t.integer "menu_id", null: false
-    t.boolean "finished", default: false, null: false
+    t.datetime "finished_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id", "menu_id"], name: "index_workouts_on_user_id_and_menu_id"
