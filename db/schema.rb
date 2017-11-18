@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 20171116125129) do
     t.integer "workout_id", null: false
     t.integer "excercise_id", null: false
     t.integer "rep", null: false
+    t.integer "set", null: false
     t.integer "sort", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
