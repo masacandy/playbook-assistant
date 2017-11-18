@@ -1,2 +1,0 @@
-class UserExcerciseLog < ApplicationRecord
-end

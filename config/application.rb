@@ -33,5 +33,8 @@ module PlaybookAssistant
     config.i18n.default_locale = :ja
     config.i18n.available_locales = [:ja, :en]
     config.time_zone = 'Tokyo'
+
+    # https://schneems.com/2017/11/08/80-smaller-rails-footprint-with-rack-deflate/
+    config.middleware.insert_after ActionDispatch::Static, Rack::Deflater
   end
 end

@@ -1,0 +1,7 @@
+h1 今日も元気にworkout
+
+- @menus.each do |menu|
+  .menu
+    = form_with url: workouts_path do |form|
+      = form.hidden_field :menu_id, value: menu.id
+      = form.submit "#{menu.name}のワークアウトスタート"

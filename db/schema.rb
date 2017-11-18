@@ -19,7 +19,25 @@ ActiveRecord::Schema.define(version: 20171116125129) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_excercise_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "menu_exercises", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "menu_id", null: false
+    t.integer "exercise_id", null: false
+    t.integer "rep", null: false
+    t.integer "set", null: false
+    t.integer "sort", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exercise_id"], name: "index_menu_exercises_on_exercise_id"
+    t.index ["menu_id", "exercise_id"], name: "index_menu_exercises_on_menu_id_and_exercise_id", unique: true
+  end
+
+  create_table "menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_exercise_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "user_id", null: false
     t.integer "workout_id", null: false
     t.integer "exercise_id", null: false
@@ -27,25 +45,16 @@ ActiveRecord::Schema.define(version: 20171116125129) do
     t.integer "reps", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["exercise_id"], name: "index_user_excercise_logs_on_exercise_id"
-    t.index ["user_id", "workout_id", "exercise_id"], name: "user_excercise_logs_index_on_u_w_e"
-    t.index ["workout_id"], name: "index_user_excercise_logs_on_workout_id"
+    t.index ["user_id", "exercise_id"], name: "index_user_exercise_logs_on_user_id_and_exercise_id"
+    t.index ["user_id", "workout_id", "exercise_id"], name: "user_exercise_logs_index_on_u_w_e"
   end
 
-  create_table "user_workout_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "user_menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "user_id", null: false
-    t.integer "workout_id", null: false
+    t.integer "menu_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_user_workout_logs_on_user_id"
-  end
-
-  create_table "user_workouts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "user_id", null: false
-    t.integer "workout_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id", "workout_id"], name: "index_user_workouts_on_user_id_and_workout_id", unique: true
+    t.index ["user_id", "menu_id"], name: "index_user_menus_on_user_id_and_menu_id", unique: true
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -70,22 +79,13 @@ ActiveRecord::Schema.define(version: 20171116125129) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  create_table "workout_excercises", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "workout_id", null: false
-    t.integer "excercise_id", null: false
-    t.integer "rep", null: false
-    t.integer "set", null: false
-    t.integer "sort", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["excercise_id"], name: "index_workout_excercises_on_excercise_id"
-    t.index ["workout_id", "excercise_id"], name: "index_workout_excercises_on_workout_id_and_excercise_id", unique: true
-  end
-
   create_table "workouts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string "name", null: false
+    t.integer "user_id", null: false
+    t.integer "menu_id", null: false
+    t.boolean "finished", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "menu_id"], name: "index_workouts_on_user_id_and_menu_id"
   end
 
 end

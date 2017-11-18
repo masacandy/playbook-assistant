@@ -5,6 +5,11 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable
 
+  has_many :user_menus
+  has_many :menus, through: :user_menus
+  has_many :workouts
+  has_many :user_exercise_logs
+
   protected
 
   # メールアドレスの確認なしでも使えるようにした
