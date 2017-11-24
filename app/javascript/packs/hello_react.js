@@ -2,9 +2,44 @@
 // like app/views/layouts/application.html.erb. All it does is render <div>Hello React</div> at the bottom
 // of the page.
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-import PropTypes from 'prop-types'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { Provider, connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+function send(name) {
+  let type = 'REACT'
+  if (name === "React") {
+    type = 'DAVID'
+  };
+
+  return {
+    type
+  };
+}
+
+function formReducer(state, action) {
+  switch (action.type) {
+    case 'REACT':
+      return Object.assign({}, state, {
+        name: 'React',
+      });
+    case 'DAVID':
+      return Object.assign({}, state, {
+        name: 'David',
+      });
+    default:
+      return state;
+  }
+}
+
+const initialState = {
+  name: 'David',
+};
+
+const store = createStore(formReducer, initialState);
+
 
 class SubmittedMessage extends React.Component {
   constructor(props) {
@@ -79,9 +114,7 @@ class ButtonTest extends React.Component {
 
     return (
       <div>
-        <button onClick={this.props.change}>
-          Change Name
-        </button>
+        <button onClick={() => this.props.handleClick(this.props.name)}>Change Name</button>
         <div>
           {messages}
         </div>
@@ -101,46 +134,48 @@ class ButtonTest extends React.Component {
 }
 
 class Hello extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: this.props.name,
-    }
-    this.changeNames = this.changeNames.bind(this);
-  }
-
-  changeNames() {
-    var name = "React";
-    if (this.state.name === "React") {
-      name = "David"
-    };
-    this.setState({
-      name: name
-    });
-  }
-
-
   render() {
     return (
-  <div>
-    <h1> Hello {this.state.name}! </h1>
-    <ButtonTest change={this.changeNames} />
-  </div>
-  )
+      <div>
+        <h1> Hello {this.props.name}! </h1>
+        <ButtonTest handleClick={this.props.onClick} name={this.props.name} />
+      </div>
+    )
   }
 }
 
-Hello.defaultProps = {
-  name: 'David'
-}
-
+// Hello.defaultProps = {
+//   name: 'David'
+// }
+//
 Hello.propTypes = {
   name: PropTypes.string
 }
 
+function mapStateToProps(state) {
+  window.console.log(state);
+  return {
+    name: state.name,
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    onClick(name) {
+      dispatch(send(name));
+    },
+  };
+}
+
+const AppContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Hello);
+
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-    <Hello />,
+    <Provider store={store}>
+      <AppContainer />
+    </Provider>,
     document.body.appendChild(document.createElement('div')),
   )
 })
