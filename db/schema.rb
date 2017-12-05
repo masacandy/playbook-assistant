@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 20171118114011) do
     t.integer "workout_id", null: false
     t.string "message", null: false
     t.integer "message_type", limit: 1, null: false
+    t.integer "next_action_type", limit: 1, null: false
     t.integer "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

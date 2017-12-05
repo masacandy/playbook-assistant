@@ -3,17 +3,18 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 
 const WorkoutMessageList = (props) => {
-  const workout_messages = props.workout_messages.map(function(workout_message) {
+  const workoutMessages = props.workoutMessages.map(function(workoutMessage) {
     return (
       <div>
-        {workout_message.message}
-        {workout_message.message_type}
+        {workoutMessage.message}
+        {workoutMessage.message_type}
       </div>
     )
   });
+
   return (
     <div className="MessageList">
-      {workout_messages}
+      {workoutMessages}
     </div>
   );
 };

@@ -2,20 +2,29 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import WorkoutMessageList from './workout_message_list'
+import WorkoutUserInput from './workout_user_input'
 import { createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 
 function sendReps(reps) {
+  console.log(reps);
   return {
     type: 'UPDATE',
     reps
   }
 }
 
+function sendWeight(num) {
+  return {
+    type: 'SEND_WEIGHT',
+  }
+}
+
 function sendMessages(messages) {
   return {
     type: 'INDEX',
-    workout_messages: messages,
+    workoutMessages: messages,
+    nextActionType: messages[messages.length - 1].next_action_type,
   }
 }
 
@@ -23,12 +32,17 @@ function formReducer(state, action) {
   switch (action.type) {
     case 'INDEX':
       return Object.assign({}, state, {
-        type: 'index',
-        workout_messages: action.workout_messages
+        type: 'INDEX',
+        workoutMessages: action.workoutMessages,
+        nextActionType: action.nextActionType,
       });
     case 'UPDATE':
       return Object.assign({}, state, {
-        type: 'update',
+        type: 'UPDATE',
+      });
+    case 'SEND_WEIGHT':
+      return Object.assign({}, state, {
+        type: 'SEND_WEIGHT',
       });
     default:
       return state;
@@ -36,8 +50,9 @@ function formReducer(state, action) {
 }
 
 const initialState = {
-  type: 'index',
-  workout_messages: [],
+  type: "INDEX",
+  workoutMessages: [],
+  nextActionType: 'assistant_message',
 };
 
 const store = createStore(formReducer, initialState);
@@ -45,22 +60,30 @@ const store = createStore(formReducer, initialState);
 function mapStateToProps(state) {
   window.console.log(state);
   return {
-    workout_messages: state.workout_messages,
+    workoutMessages: state.workoutMessages,
+    nextActionType: state.nextActionType,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    sendMessages(messages) {
+    sendMessages: (messages) => {
       dispatch(sendMessages(messages))
     },
-    sendReps(num) {
+    sendReps: (num) => {
       dispatch(sendReps(num))
+    },
+    sendWeight: (num) => {
+      dispatch(sendWeight(num))
     },
   };
 }
 
 class WorkoutMessageContainer extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
   componentDidMount() {
     this.fetchMessages(gon.workout_id);
   }
@@ -77,7 +100,9 @@ class WorkoutMessageContainer extends React.Component {
       return response.json();
     })
     .then((json) => {
-      this.props.sendMessages(json.workout_messages);
+      const messages = json.workout_messages
+      this.props.sendMessages(messages);
+      return
     })
     .catch((err) => {
       console.error(err);
@@ -85,9 +110,19 @@ class WorkoutMessageContainer extends React.Component {
   };
 
   render() {
+    const nextActionType = this.props.nextActionType;
+    const sendWeight = this.props.sendWeight;
+
+    let userInput = null;
+
+    if (nextActionType !== 'assistant_message') {
+      userInput = <WorkoutUserInput nextActionType={nextActionType} sendWeight={sendWeight} />
+    }
+
     return (
       <div>
-        <WorkoutMessageList workout_messages={this.props.workout_messages} />
+        <WorkoutMessageList workoutMessages={this.props.workoutMessages} />
+        {userInput}
       </div>
     )
   }
