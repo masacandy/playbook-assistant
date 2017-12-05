@@ -15,6 +15,27 @@ function sendReps(reps) {
 }
 
 function sendWeight(num) {
+  postWeight(num) {
+    const params = { workout_id: id };
+    const urlParams = new URLSearchParams(Object.entries(params));
+    const url = '/api/v1/workout_messages?' + urlParams;
+
+    return fetch(url, { credentials: 'same-origin' }
+    )
+    .then((response) => {
+      if (!response.ok) throw new Error("invalid");
+      return response.json();
+    })
+    .then((json) => {
+      const messages = json.workout_messages
+      this.props.sendMessages(messages);
+      return
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  };
+
   return {
     type: 'SEND_WEIGHT',
   }
