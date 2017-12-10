@@ -21,7 +21,29 @@ class UserInputWeight extends React.Component {
   }
 
   handleSubmit(event) {
-    this.props.sendWeight(this.state.weight);
+    const url = '/api/v1/workouts/messages/weights'
+
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        "workout_id": gon.workout_id,
+        "menu_id": this.props.menuId,
+        "exercise_id": this.props.exerciseId,
+        "weight": this.state.weight,
+      })
+    })
+    .then((response) => {
+      if (!response.ok) throw new Error("invalid");
+      return response.json();
+    })
+    .then((json) => {
+      return this.props.sendWeight(json)
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   }
 
   handleEnter(event) {
@@ -43,6 +65,65 @@ class UserInputWeight extends React.Component {
   }
 }
 
+const RepsButtons = (props) => {
+  const repsButtons = [...Array(props.exerciseReps)].map(function(_, rep) {
+    return (
+      <input type="button" value={rep + 1} onClick={props.handleClick} />
+    )
+  });
+
+  return (
+    <div className="RepsButtons">
+      {repsButtons}
+    </div>
+  );
+};
+
+
+class UserInputReps extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
+    const url = '/api/v1/workouts/messages/reps'
+
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        "workout_id": gon.workout_id,
+        "menu_id": this.props.menuId,
+        "exercise_id": this.props.exerciseId,
+        "reps": event.target.value,
+        "weight": this.props.weight,
+      })
+    })
+    .then((response) => {
+      if (!response.ok) throw new Error("invalid");
+      return response.json();
+    })
+    .then((json) => {
+      return this.props.sendReps(json)
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  }
+
+  render() {
+    return (
+      <div className="UserInputReps">
+        <RepsButtons exerciseReps={this.props.exerciseReps} handleClick={this.handleClick} />
+      </div>
+    );
+  }
+}
+
+
 class WorkoutUserInput extends React.Component {
   constructor(props) {
     super(props);
@@ -53,7 +134,9 @@ class WorkoutUserInput extends React.Component {
     let userInput = null;
 
     if (nextActionType === 'user_input_weight') {
-      userInput = <UserInputWeight sendWeight={this.props.sendWeight} />
+      userInput = <UserInputWeight sendWeight={this.props.sendWeight} menuId={this.props.menuId} exerciseId={this.props.exerciseId} />
+    } else if (nextActionType === 'user_input_reps') {
+      userInput = <UserInputReps sendReps={this.props.sendReps} menuId={this.props.menuId} exerciseId={this.props.exerciseId} exerciseReps={this.props.exerciseReps} weight={this.props.weight} />
     }
 
     return (
