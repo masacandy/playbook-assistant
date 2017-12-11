@@ -83,7 +83,7 @@ const RepsButtons = (props) => {
 class UserInputReps extends React.Component {
   constructor(props) {
     super(props);
-
+    console.log(this.props);
     this.handleClick = this.handleClick.bind(this);
   }
 

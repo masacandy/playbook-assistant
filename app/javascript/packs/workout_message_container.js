@@ -14,7 +14,7 @@ function sendReps(json) {
     type: 'SEND_REPS',
     workoutMessages: messages,
     nextActionType: messages[messages.length - 1].next_action_type,
-    currenExercisetWeight: json.weight,
+    currentExerciseWeight: json.weight,
     currentMenuId: json.current_menu.id,
     currentExerciseId: json.current_exercise.id,
   }
@@ -71,10 +71,11 @@ function formReducer(state, action) {
       });
     case 'SEND_REPS':
       return Object.assign({}, state, {
-        type: 'SEND_WEIGHT',
+        type: 'SEND_REPS',
         workoutMessages: action.workoutMessages,
         nextActionType: action.nextActionType,
         currentExerciseWeight: action.currentExerciseWeight,
+        currentExerciseId: action.currentExerciseId
       });
     default:
       return state;
