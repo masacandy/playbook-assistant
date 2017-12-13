@@ -12,9 +12,72 @@ class FetchCurrentExerciseService
   end
 
   def call
-    exercise = Menu.find(workout.menu_id).menu_exercises.first
+    return first_exercise if last_exercise_log.nil?
 
-    latest_weight = workout.user.user_last_exercise_logs.where(exercise_id: exercise.id)&.last&.weight
-    CurrentExercise.new(exercise.id, exercise.rep, latest_weight)
+    return next_exercise if next_exercise?
+    current_exercise
+  end
+
+  def first_exercise
+    first_menu_exercise = workout.menu.menu_exercises.first
+
+    CurrentExercise.new(
+      first_menu_exercise.exercise_id,
+      first_menu_exercise.rep,
+      latest_exercise_weight(first_menu_exercise.exercise_id)
+    )
+  end
+
+  def latest_exercise_weight(exercise_id)
+    workout.user.user_last_exercise_logs.where(
+      exercise_id: exercise_id,
+    )&.last&.weight
+  end
+
+  def last_exercise_log
+    UserExerciseLog.where(workout_id: workout.id).order(id: :asc)&.last
+  end
+
+  # ログの最後のメニューのやるべきセット数
+  def last_exercise_set_count
+    last_exercise_id = last_exercise_log.exercise_id
+    workout.menu.menu_exercises.find_by(exercise_id: last_exercise_log.exercise_id).set
+  end
+
+  # ログの最後のメニューの完了セット数
+  def last_exercise_set_count_from_log
+    workout.user_exercise_logs.where(exercise_id: last_exercise_log.exercise_id).count
+  end
+
+  def next_exercise?
+    last_exercise_set_count == last_exercise_set_count_from_log
+  end
+
+  def next_exercise
+    menu_exercise = MenuExercise.find_by(
+      menu_id: workout.menu_id,
+      sort: current_menu_exercise.sort + 1,
+    )
+
+    CurrentExercise.new(
+      menu_exercise.exercise_id,
+      menu_exercise.rep,
+      latest_exercise_weight(menu_exercise.exercise_id)
+    )
+  end
+
+  def current_menu_exercise
+    MenuExercise.find_by(
+      menu_id: workout.menu_id,
+      exercise_id: last_exercise_log.exercise_id,
+    )
+  end
+
+  def current_exercise
+    CurrentExercise.new(
+      current_menu_exercise.exercise_id,
+      current_menu_exercise.rep,
+      latest_exercise_weight(current_menu_exercise.exercise_id),
+    )
   end
 end

@@ -25,7 +25,8 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
     @workout_messages = WorkoutMessage.where(workout_id: params[:workout_id]).order(id: :asc)
     @weight = params[:weight]
     @current_exercise = OpenStruct.new(
-      id: next_exercise? ? next_menu_exercise.exercise_id : params[:exercise_id],
+      id: last_set? ? next_menu_exercise&.exercise_id : params[:exercise_id],
+      rep: last_set? ? next_menu_exercise&.rep : @menu_exercise.rep,
     )
   end
 
@@ -37,7 +38,7 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
 
   def create_next_action_message
     message = "Great!"
-    message += next_exercise? ? "次の種目だ" : "その調子で続けよう！"
+    message += last_set? ? "次の種目だ" : "その調子で続けよう！" unless last_exercise?
 
     WorkoutMessage.create!(
       workout_id: params[:workout_id],
@@ -45,12 +46,16 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
       message_type: WorkoutMessage.message_types[:assistant],
       next_action_type: WorkoutMessage.next_action_types[:assistant_message],
     )
+    return create_next_reps_message unless last_set?
 
-    return create_next_exercise_message if next_exercise?
-    create_next_reps_message
+    update_latest_log
+
+    return ::FinishWorkoutService.call(workout_id: params[:workout_id]) if last_exercise?
+
+    ::CreateSwitchWorkoutExerciseMessageService.call(workout_id: params[:workout_id], next_menu_exercise: next_menu_exercise)
   end
 
-  def next_exercise?
+  def last_set?
     exercise_done_set_count = UserExerciseLog.where(
       user_id: current_user.id,
       workout_id: params[:workout_id],
@@ -58,12 +63,6 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
     ).count
 
     @menu_exercise.set == exercise_done_set_count
-  end
-
-  def create_next_exercise_message
-    update_latest_log
-
-    ::CreateSwitchWorkoutExerciseMessageService.call(workout_id: params[:workout_id], next_menu_exercise: next_menu_exercise)
   end
 
   def update_latest_log
@@ -79,6 +78,10 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
       weight: params[:weight],
       weight_up: weight_up
     )
+  end
+
+  def last_exercise?
+    MenuExercise.where(menu_id: params[:menu_id]).order(sort: :asc).last == @menu_exercise
   end
 
   def next_menu_exercise

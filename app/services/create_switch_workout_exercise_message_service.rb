@@ -48,7 +48,7 @@ class CreateSwitchWorkoutExerciseMessageService
     head_message = UserExerciseLog.where(user_id: user_id, workout_id: workout.id).present? ? '次の' : '最初の'
 
     first_message = BaseWorkoutMessage.new(
-      "#{head_message}の種目は#{menu_exercise.exercise.name}です",
+      "#{head_message}種目は#{menu_exercise.exercise.name}です",
       WorkoutMessage.next_action_types[:assistant_message]
     )
     second_message = BaseWorkoutMessage.new(

@@ -9,7 +9,7 @@ import { Provider, connect } from 'react-redux';
 
 function sendReps(json) {
   const messages = json.workout_messages
-
+console.log(json)
   return {
     type: 'SEND_REPS',
     workoutMessages: messages,
@@ -17,6 +17,7 @@ function sendReps(json) {
     currentExerciseWeight: json.weight,
     currentMenuId: json.current_menu.id,
     currentExerciseId: json.current_exercise.id,
+    currentExerciseReps: json.current_exercise.rep,
   }
 }
 
@@ -29,7 +30,6 @@ function sendWeight(json) {
     nextActionType: messages[messages.length - 1].next_action_type,
     currentExerciseWeight: json.weight,
   }
-
 }
 
 function setWorkouts(json) {
@@ -58,10 +58,6 @@ function formReducer(state, action) {
         currentExerciseReps: action.currentExerciseReps,
         currentExerciseWeight: action.currentExerciseWeight,
       });
-    case 'UPDATE':
-      return Object.assign({}, state, {
-        type: 'UPDATE',
-      });
     case 'SEND_WEIGHT':
       return Object.assign({}, state, {
         type: 'SEND_WEIGHT',
@@ -75,7 +71,8 @@ function formReducer(state, action) {
         workoutMessages: action.workoutMessages,
         nextActionType: action.nextActionType,
         currentExerciseWeight: action.currentExerciseWeight,
-        currentExerciseId: action.currentExerciseId
+        currentExerciseId: action.currentExerciseId,
+        currentExerciseReps: action.currentExerciseReps,
       });
     default:
       return state;
