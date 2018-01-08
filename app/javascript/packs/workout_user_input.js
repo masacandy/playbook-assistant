@@ -83,7 +83,7 @@ const RepsButtons = (props) => {
 class UserInputReps extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
+
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -115,9 +115,141 @@ class UserInputReps extends React.Component {
   }
 
   render() {
-    return (
+    return(
       <div className="UserInputReps">
         <RepsButtons exerciseReps={this.props.exerciseReps} handleClick={this.handleClick} />
+      </div>
+    );
+  }
+}
+
+class UserSelectExercise extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      unfinishedExercises: [],
+      exerciseId: null,
+    }
+
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  componentDidMount() {
+    this.fetchUndoneExercises(gon.workout_id);
+  }
+
+  fetchUndoneExercises(id) {
+    const params = { workout_id: id, menu_id: this.props.menuId };
+    const urlParams = new URLSearchParams(Object.entries(params));
+
+    const url = '/api/v1/workouts/messages/exercises/unfinished?' + urlParams
+
+    return fetch(url, { credentials: 'same-origin' }
+    )
+    .then((response) => {
+      if (!response.ok) throw new Error("invalid");
+      return response.json();
+    })
+    .then((json) => {
+      this.setState({
+        unfinishedExercises: json.unfinished_exercises,
+        exerciseId: json.unfinished_exercises[0].id,
+      })
+      return
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  };
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const url = '/api/v1/workouts/messages/exercises/select'
+
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        "workout_id": gon.workout_id,
+        "exercise_id": this.state.exerciseId,
+        "menu_id": this.props.menuId,
+      })
+    })
+    .then((response) => {
+      if (!response.ok) throw new Error("invalid");
+      return response.json();
+    })
+    .then((json) => {
+      return this.props.selectExercise(json)
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  render() {
+    const options = this.state.unfinishedExercises.map(function(exercise) {
+      return <option value={exercise.id} key={exercise.id}>{exercise.name}</option>
+    });
+
+    return (
+      <div className="UserInputExercise">
+        <form onSubmit={this.handleSubmit}>
+          <select value={this.state.exerciseId} onChange={this.handleChange}>
+            {options}
+          </select>
+          <input type="submit" value="決定" />
+        </form>
+      </div>
+    );
+  }
+}
+
+class UserChooseExercise extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(event) {
+    const url = '/api/v1/workouts/messages/exercises/choose'
+    const answer = event.target.value === "はい" ? true : false
+
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        "workout_id": gon.workout_id,
+        "exercise_id": this.props.exerciseId,
+        "menu_id": this.props.menuId,
+        "answer": answer,
+      })
+    })
+    .then((response) => {
+      if (!response.ok) throw new Error("invalid");
+      return response.json();
+    })
+    .then((json) => {
+      return this.props.chooseExercise(json)
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  }
+
+  render() {
+    return (
+      <div className="UserChooseExercise">
+        <input type="button" value="はい" onClick={this.handleClick} />
+        <input type="button" value="いえ、違う種目にします" onClick={this.handleClick} />
       </div>
     );
   }
@@ -137,6 +269,10 @@ class WorkoutUserInput extends React.Component {
       userInput = <UserInputWeight sendWeight={this.props.sendWeight} menuId={this.props.menuId} exerciseId={this.props.exerciseId} />
     } else if (nextActionType === 'user_input_reps') {
       userInput = <UserInputReps sendReps={this.props.sendReps} menuId={this.props.menuId} exerciseId={this.props.exerciseId} exerciseReps={this.props.exerciseReps} weight={this.props.weight} />
+    } else if (nextActionType === 'user_select_exercise') {
+      userInput = <UserSelectExercise menuId={this.props.menuId} selectExercise={this.props.selectExercise} />
+    } else if (nextActionType === 'user_choose_exercise') {
+      userInput = <UserChooseExercise exerciseId={this.props.exerciseId} menuId={this.props.menuId} chooseExercise={this.props.chooseExercise} />
     }
 
     return (

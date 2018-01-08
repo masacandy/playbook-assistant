@@ -3,13 +3,13 @@ class CreateSwitchWorkoutExerciseMessageService
 
   BaseWorkoutMessage = Struct.new(:message, :next_action_type)
 
-  def self.call(workout_id:, next_menu_exercise: nil)
-    new(workout_id, next_menu_exercise).call
+  def self.call(workout_id:, next_menu_exercise_id: nil)
+    new(workout_id, next_menu_exercise_id).call
   end
 
-  def initialize(workout_id, next_menu_exercise)
+  def initialize(workout_id, next_menu_exercise_id)
     @workout = Workout.find(workout_id)
-    @menu_exercise = next_menu_exercise
+    @menu_exercise = MenuExercise.find(next_menu_exercise_id)
     @user_id = @workout.user_id
     @messages = []
   end
@@ -25,7 +25,7 @@ class CreateSwitchWorkoutExerciseMessageService
     workout_exercise = exercises.workout_exercises.where(menu_id: workout.menu_id).first
 
     messages.push(BaseWorkoutMessage.new(
-      "#{haed_message}の種目は#{exercise.name}です",
+      "OK!#{haed_message}の種目は#{exercise.name}です",
       WorkoutMessage.next_action_types[:assistant_message]
     ))
 
@@ -48,7 +48,7 @@ class CreateSwitchWorkoutExerciseMessageService
     head_message = UserExerciseLog.where(user_id: user_id, workout_id: workout.id).present? ? '次の' : '最初の'
 
     first_message = BaseWorkoutMessage.new(
-      "#{head_message}種目は#{menu_exercise.exercise.name}です",
+      "OK!#{head_message}種目は#{menu_exercise.exercise.name}です",
       WorkoutMessage.next_action_types[:assistant_message]
     )
     second_message = BaseWorkoutMessage.new(

@@ -11,7 +11,7 @@ class Api::V1::WorkoutsController < Api::V1::BaseController
 
     menu_exercise = @workout.menu.menu_exercises.order(sort: :asc).first
 
-    ::CreateSwitchWorkoutExerciseMessageService.call(workout_id: params[:id], next_menu_exercise: menu_exercise)
+    ::CreateRecommendedWorkoutExerciseMessageService.call(workout_id: params[:id])
 
     @workout.workout_messages.reload
   end

@@ -7,9 +7,36 @@ import WorkoutUserInput from './workout_user_input';
 import { applyMiddleware, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 
+function selectExercise(json) {
+  const messages = json.workout_messages
+
+  return {
+    type: 'SELECT_EXERCISE',
+    workoutMessages: messages,
+    nextActionType: messages[messages.length - 1].next_action_type,
+    currentExerciseId: json.current_exercise.id,
+    currentExerciseReps: json.current_exercise.rep,
+    currentExerciseWeight: json.current_exercise.latest_weight,
+  }
+}
+
+
+function chooseExercise(json) {
+  const messages = json.workout_messages
+
+  return {
+    type: 'CHOOSE_EXERCISE',
+    workoutMessages: messages,
+    nextActionType: messages[messages.length - 1].next_action_type,
+    currentExerciseId: json.current_exercise.id,
+    currentExerciseReps: json.current_exercise.rep,
+    currentExerciseWeight: json.current_exercise.latest_weight,
+  }
+}
+
 function sendReps(json) {
   const messages = json.workout_messages
-console.log(json)
+
   return {
     type: 'SEND_REPS',
     workoutMessages: messages,
@@ -74,6 +101,24 @@ function formReducer(state, action) {
         currentExerciseId: action.currentExerciseId,
         currentExerciseReps: action.currentExerciseReps,
       });
+    case 'CHOOSE_EXERCISE':
+      return Object.assign({}, state, {
+        type: 'CHOOSE_EXERCISE',
+        workoutMessages: action.workoutMessages,
+        nextActionType: action.nextActionType,
+        currentExerciseWeight: action.currentExerciseWeight,
+        currentExerciseId: action.currentExerciseId,
+        currentExerciseReps: action.currentExerciseReps,
+      });
+    case 'SELECT_EXERCISE':
+      return Object.assign({}, state, {
+        type: 'SELECT_EXERCISE',
+        workoutMessages: action.workoutMessages,
+        nextActionType: action.nextActionType,
+        currentExerciseWeight: action.currentExerciseWeight,
+        currentExerciseId: action.currentExerciseId,
+        currentExerciseReps: action.currentExerciseReps,
+      });
     default:
       return state;
   }
@@ -113,6 +158,12 @@ function mapDispatchToProps(dispatch) {
     sendWeight: (num) => {
       dispatch(sendWeight(num))
     },
+    chooseExercise: (json) => {
+      dispatch(chooseExercise(json))
+    },
+    selectExercise: (json) => {
+      dispatch(selectExercise(json))
+    },
   };
 }
 
@@ -149,7 +200,7 @@ class WorkoutMessageContainer extends React.Component {
     let userInput = null;
 
     if (this.props.nextActionType !== 'assistant_message') {
-      userInput = <WorkoutUserInput nextActionType={this.props.nextActionType} sendWeight={this.props.sendWeight} sendReps={this.props.sendReps} menuId={this.props.currentMenuId} exerciseId={this.props.currentExerciseId} exerciseReps={this.props.currentExerciseReps} weight={this.props.currentExerciseWeight} />
+      userInput = <WorkoutUserInput nextActionType={this.props.nextActionType} sendWeight={this.props.sendWeight} sendReps={this.props.sendReps} menuId={this.props.currentMenuId} exerciseId={this.props.currentExerciseId} exerciseReps={this.props.currentExerciseReps} weight={this.props.currentExerciseWeight} chooseExercise={this.props.chooseExercise} selectExercise={this.props.selectExercise} />
     }
 
     return (

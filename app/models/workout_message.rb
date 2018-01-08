@@ -12,5 +12,7 @@ class WorkoutMessage < ApplicationRecord
     user_input_weight: 2,
     next_exercise: 3,
     finish_workout: 4,
+    user_choose_exercise: 5,
+    user_select_exercise: 6,
   }
 end

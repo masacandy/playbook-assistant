@@ -14,6 +14,12 @@ Rails.application.routes.draw do
         namespace :messages do
           resources :weights, only: %i[create]
           resources :reps, only: %i[create]
+
+          namespace :exercises do
+            resources :unfinished, only: %[index]
+            resources :select, only: %[create]
+            resources :choose, only: %[create]
+          end
         end
       end
     end

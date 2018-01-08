@@ -52,7 +52,8 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
 
     return ::FinishWorkoutService.call(workout_id: params[:workout_id]) if last_exercise?
 
-    ::CreateSwitchWorkoutExerciseMessageService.call(workout_id: params[:workout_id], next_menu_exercise: next_menu_exercise)
+    ::CreateRecommendedWorkoutExerciseMessageService.call(workout_id: params[:workout_id])
+    #::CreateSwitchWorkoutExerciseMessageService.call(workout_id: params[:workout_id], next_menu_exercise_id: next_menu_exercise.id)
   end
 
   def last_set?
