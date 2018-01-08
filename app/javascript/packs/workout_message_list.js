@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 const WorkoutMessageList = (props) => {
   const workoutMessages = props.workoutMessages.map(function(workoutMessage) {
     return (
-      <div>
+      <div class={"message-" + workoutMessage.message_type}>
         {workoutMessage.message}
         {workoutMessage.message_type}
       </div>

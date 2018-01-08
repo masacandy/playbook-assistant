@@ -174,6 +174,7 @@ class WorkoutMessageContainer extends React.Component {
 
   componentDidMount() {
     this.fetchMessages(gon.workout_id);
+    this.scrollToBottom();
   }
 
   fetchMessages(id, setWorkouts) {
@@ -196,6 +197,14 @@ class WorkoutMessageContainer extends React.Component {
     });
   };
 
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  }
+
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
   render() {
     let userInput = null;
 
@@ -207,6 +216,8 @@ class WorkoutMessageContainer extends React.Component {
       <div>
         <WorkoutMessageList workoutMessages={this.props.workoutMessages} />
         {userInput}
+        <div ref={(el) => { this.messagesEnd = el; }}>
+        </div>
       </div>
     )
   }
