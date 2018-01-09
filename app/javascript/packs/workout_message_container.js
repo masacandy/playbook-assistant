@@ -6,13 +6,24 @@ import WorkoutMessageList from './workout_message_list';
 import WorkoutUserInput from './workout_user_input';
 import { applyMiddleware, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
+import { ChatFeed, Message } from 'react-chat-ui'
+
+function createMessages(messages) {
+  return messages.map(function(message) {
+    return new Message({
+      id: message.message_type == 'user' ? 0 : 1,
+      message: message.message,
+    })
+  })
+}
 
 function selectExercise(json) {
   const messages = json.workout_messages
+  const chatMessages = createMessages(json.workout_messages);
 
   return {
     type: 'SELECT_EXERCISE',
-    workoutMessages: messages,
+    workoutMessages: chatMessages,
     nextActionType: messages[messages.length - 1].next_action_type,
     currentExerciseId: json.current_exercise.id,
     currentExerciseReps: json.current_exercise.rep,
@@ -23,10 +34,11 @@ function selectExercise(json) {
 
 function chooseExercise(json) {
   const messages = json.workout_messages
+  const chatMessages = createMessages(json.workout_messages);
 
   return {
     type: 'CHOOSE_EXERCISE',
-    workoutMessages: messages,
+    workoutMessages: chatMessages,
     nextActionType: messages[messages.length - 1].next_action_type,
     currentExerciseId: json.current_exercise.id,
     currentExerciseReps: json.current_exercise.rep,
@@ -36,10 +48,11 @@ function chooseExercise(json) {
 
 function sendReps(json) {
   const messages = json.workout_messages
+  const chatMessages = createMessages(json.workout_messages);
 
   return {
     type: 'SEND_REPS',
-    workoutMessages: messages,
+    workoutMessages: chatMessages,
     nextActionType: messages[messages.length - 1].next_action_type,
     currentExerciseWeight: json.weight,
     currentMenuId: json.current_menu.id,
@@ -50,21 +63,23 @@ function sendReps(json) {
 
 function sendWeight(json) {
   const messages = json.workout_messages
+  const chatMessages = createMessages(json.workout_messages);
 
   return {
     type: 'SEND_WEIGHT',
-    workoutMessages: messages,
+    workoutMessages: chatMessages,
     nextActionType: messages[messages.length - 1].next_action_type,
     currentExerciseWeight: json.weight,
   }
 }
 
 function setWorkouts(json) {
-  const messages = json.workout_messages;
+  const messages = json.workout_messages
+  const chatMessages = createMessages(json.workout_messages);
 
   return {
     type: 'INDEX',
-    workoutMessages: messages,
+    workoutMessages: chatMessages,
     nextActionType: messages[messages.length - 1].next_action_type,
     currentMenuId: json.current_menu_id,
     currentExerciseId: json.current_exercise.id,
@@ -167,6 +182,19 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+const FinishWorkoutButton = () => {
+  const click = (e) => {
+    e.preventDefault();
+    location.href="/";
+  }
+
+  return (
+    <div className="FinishWorkoutButton">
+      <a href="" onClick={e => click(e)}>Finish</a>
+    </div>
+  );
+};
+
 class WorkoutMessageContainer extends React.Component {
   constructor(props) {
     super(props)
@@ -212,10 +240,23 @@ class WorkoutMessageContainer extends React.Component {
       userInput = <WorkoutUserInput nextActionType={this.props.nextActionType} sendWeight={this.props.sendWeight} sendReps={this.props.sendReps} menuId={this.props.currentMenuId} exerciseId={this.props.currentExerciseId} exerciseReps={this.props.currentExerciseReps} weight={this.props.currentExerciseWeight} chooseExercise={this.props.chooseExercise} selectExercise={this.props.selectExercise} />
     }
 
+    let finishWorkoutButton = null;
+
+    if (this.props.nextActionType === 'finish_workout') {
+      finishWorkoutButton = <FinishWorkoutButton />
+    }
+
     return (
       <div>
-        <WorkoutMessageList workoutMessages={this.props.workoutMessages} />
+        <ChatFeed
+          messages={this.props.workoutMessages}
+          isTyping={false}
+          hasInputField={false}
+          showSenderName={false}
+          bubblesCentered={false}
+        />
         {userInput}
+        {finishWorkoutButton}
         <div ref={(el) => { this.messagesEnd = el; }}>
         </div>
       </div>

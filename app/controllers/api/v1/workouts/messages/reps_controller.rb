@@ -82,7 +82,9 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
   end
 
   def last_exercise?
-    MenuExercise.where(menu_id: params[:menu_id]).order(sort: :asc).last == @menu_exercise
+    # unfinishedから移植
+    done_exercise_ids_count = UserExerciseLog.where(user_id: current_user.id, workout_id: params[:workout_id]).pluck(:exercise_id).uniq.count
+    MenuExercise.where(menu_id: params[:menu_id]).count == done_exercise_ids_count
   end
 
   def next_menu_exercise
