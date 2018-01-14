@@ -14,6 +14,7 @@ Rails.application.routes.draw do
         namespace :messages do
           resources :weights, only: %i[create]
           resources :reps, only: %i[create]
+          resources :skip, only: %i[create]
 
           namespace :exercises do
             resources :unfinished, only: %[index]
@@ -28,7 +29,9 @@ Rails.application.routes.draw do
   scope module: :web, defaults: { format: :html } do
     resources :user, only: [] do
       collection do
-        resources :workouts, only: %i[create show]
+        resources :workouts, only: %i[create show] do
+          resources :finish, only: %i[index], controller: 'workouts/finish'
+        end
       end
     end
   end

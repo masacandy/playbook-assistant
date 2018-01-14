@@ -25,8 +25,8 @@ class UserInputWeight extends React.Component {
 
     return fetch(url, {
       method: 'POST',
-      credentials: 'same-origin',
       headers: {'Content-Type':'application/json'},
+      credentials: 'same-origin',
       body: JSON.stringify({
         "workout_id": gon.workout_id,
         "menu_id": this.props.menuId,
@@ -79,12 +79,32 @@ const RepsButtons = (props) => {
   );
 };
 
+const SkipExerciseButton = (props) => {
+  return (
+    <div className="SkipExerciseButton">
+      <input type="button" value="このエクササイズをスキップする" onClick={props.handleSkipExercise} />
+    </div>
+  );
+};
+
+
 
 class UserInputReps extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      weight: this.props.weight,
+    }
 
+    this.changeWeight = this.changeWeight.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleSkipExercise = this.handleSkipExercise.bind(this);
+  }
+
+  changeWeight(event) {
+    this.setState({
+      weight: event.target.value,
+    })
   }
 
   handleClick(event) {
@@ -99,7 +119,7 @@ class UserInputReps extends React.Component {
         "menu_id": this.props.menuId,
         "exercise_id": this.props.exerciseId,
         "reps": event.target.value,
-        "weight": this.props.weight,
+        "weight": this.state.weight,
       })
     })
     .then((response) => {
@@ -114,10 +134,37 @@ class UserInputReps extends React.Component {
     });
   }
 
+  handleSkipExercise(event) {
+    const url = '/api/v1/workouts/messages/skip'
+
+    return fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        "workout_id": gon.workout_id,
+        "exercise_id": this.props.exerciseId,
+      })
+    })
+    .then((response) => {
+      if (!response.ok) throw new Error("invalid");
+      return response.json();
+    })
+    .then((json) => {
+      return this.props.skipExercise(json)
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  }
+
   render() {
     return(
       <div className="UserInputReps">
+        <input type='number' value={this.state.weight} onChange={this.changeWeight} />
+        kg
         <RepsButtons exerciseReps={this.props.exerciseReps} handleClick={this.handleClick} />
+        <SkipExerciseButton handleSkipExercise={this.handleSkipExercise} />
       </div>
     );
   }
@@ -268,7 +315,7 @@ class WorkoutUserInput extends React.Component {
     if (nextActionType === 'user_input_weight') {
       userInput = <UserInputWeight sendWeight={this.props.sendWeight} menuId={this.props.menuId} exerciseId={this.props.exerciseId} />
     } else if (nextActionType === 'user_input_reps') {
-      userInput = <UserInputReps sendReps={this.props.sendReps} menuId={this.props.menuId} exerciseId={this.props.exerciseId} exerciseReps={this.props.exerciseReps} weight={this.props.weight} />
+      userInput = <UserInputReps sendReps={this.props.sendReps} menuId={this.props.menuId} exerciseId={this.props.exerciseId} exerciseReps={this.props.exerciseReps} weight={this.props.weight} skipExercise={this.props.skipExercise} />
     } else if (nextActionType === 'user_select_exercise') {
       userInput = <UserSelectExercise menuId={this.props.menuId} selectExercise={this.props.selectExercise} />
     } else if (nextActionType === 'user_choose_exercise') {

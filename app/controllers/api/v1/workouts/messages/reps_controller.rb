@@ -6,7 +6,7 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
   def create
     WorkoutMessage.create!(
       workout_id: params[:workout_id],
-      message: "#{params[:reps]}回",
+      message: "#{params[:weight]}kg, #{params[:reps]}回",
       message_type: WorkoutMessage.message_types[:user],
       next_action_type: WorkoutMessage.next_action_types[:assistant_message],
     )
@@ -19,9 +19,10 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
       reps: params[:reps],
     )
 
+    @workout = Workout.find(params[:workout_id])
+
     create_next_action_message
 
-    @workout = Workout.find(params[:workout_id])
     @workout_messages = WorkoutMessage.where(workout_id: params[:workout_id]).order(id: :asc)
     @weight = params[:weight]
     @current_exercise = OpenStruct.new(
@@ -46,6 +47,7 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
       message_type: WorkoutMessage.message_types[:assistant],
       next_action_type: WorkoutMessage.next_action_types[:assistant_message],
     )
+
     return create_next_reps_message unless last_set?
 
     update_latest_log
@@ -53,7 +55,6 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
     return ::FinishWorkoutService.call(workout_id: params[:workout_id]) if last_exercise?
 
     ::CreateRecommendedWorkoutExerciseMessageService.call(workout_id: params[:workout_id])
-    #::CreateSwitchWorkoutExerciseMessageService.call(workout_id: params[:workout_id], next_menu_exercise_id: next_menu_exercise.id)
   end
 
   def last_set?
@@ -82,16 +83,13 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
   end
 
   def last_exercise?
-    # unfinishedから移植
-    done_exercise_ids_count = UserExerciseLog.where(user_id: current_user.id, workout_id: params[:workout_id]).pluck(:exercise_id).uniq.count
-    MenuExercise.where(menu_id: params[:menu_id]).count == done_exercise_ids_count
+    ::FetchUnfinishedExercisesService.call(workout_id: @workout.id).blank?
   end
 
   def next_menu_exercise
-    MenuExercise.find_by(
-      menu_id: params[:menu_id],
-      sort: @menu_exercise.sort + 1,
-    )
+    recommend_next_exercise = ::FetchUnfinishedExercisesService.call(workout_id: @workout.id)&.first
+    return nil if recommend_next_exercise.nil?
+    @workout.menu.menu_exercises.find_by(exercise_id: recommend_next_exercise.id)
   end
 
   def create_next_reps_message

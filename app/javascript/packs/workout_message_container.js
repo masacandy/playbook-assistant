@@ -8,6 +8,20 @@ import { applyMiddleware, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import { ChatFeed, Message } from 'react-chat-ui'
 
+function skipExercise(json) {
+  const messages = json.workout_messages
+  const chatMessages = createMessages(json.workout_messages);
+
+  return {
+    type: 'SKIP_EXERCISE',
+    workoutMessages: chatMessages,
+    nextActionType: messages[messages.length - 1].next_action_type,
+    currentExerciseId: json.current_exercise.id,
+    currentExerciseReps: json.current_exercise.rep,
+    currentExerciseWeight: json.current_exercise.weight,
+  }
+}
+
 function createMessages(messages) {
   return messages.map(function(message) {
     return new Message({
@@ -134,6 +148,16 @@ function formReducer(state, action) {
         currentExerciseId: action.currentExerciseId,
         currentExerciseReps: action.currentExerciseReps,
       });
+    case 'SKIP_EXERCISE':
+      return Object.assign({}, state, {
+        type: 'SKIP_EXERCISE',
+        workoutMessages: action.workoutMessages,
+        nextActionType: action.nextActionType,
+        currentExerciseWeight: action.currentExerciseWeight,
+        currentExerciseId: action.currentExerciseId,
+        currentExerciseReps: action.currentExerciseReps,
+      });
+
     default:
       return state;
   }
@@ -178,6 +202,9 @@ function mapDispatchToProps(dispatch) {
     },
     selectExercise: (json) => {
       dispatch(selectExercise(json))
+    },
+    skipExercise: (json) => {
+      dispatch(skipExercise(json))
     },
   };
 }
@@ -237,7 +264,7 @@ class WorkoutMessageContainer extends React.Component {
     let userInput = null;
 
     if (this.props.nextActionType !== 'assistant_message') {
-      userInput = <WorkoutUserInput nextActionType={this.props.nextActionType} sendWeight={this.props.sendWeight} sendReps={this.props.sendReps} menuId={this.props.currentMenuId} exerciseId={this.props.currentExerciseId} exerciseReps={this.props.currentExerciseReps} weight={this.props.currentExerciseWeight} chooseExercise={this.props.chooseExercise} selectExercise={this.props.selectExercise} />
+      userInput = <WorkoutUserInput nextActionType={this.props.nextActionType} sendWeight={this.props.sendWeight} sendReps={this.props.sendReps} menuId={this.props.currentMenuId} exerciseId={this.props.currentExerciseId} exerciseReps={this.props.currentExerciseReps} weight={this.props.currentExerciseWeight} chooseExercise={this.props.chooseExercise} selectExercise={this.props.selectExercise} skipExercise={this.props.skipExercise} />
     }
 
     let finishWorkoutButton = null;
@@ -274,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <Provider store={store}>
       <AppContainer />
     </Provider>,
-    document.body.appendChild(document.createElement('div')),
+
+    document.getElementById('workout-container')
   )
 })

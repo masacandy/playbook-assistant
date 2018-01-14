@@ -10,10 +10,9 @@ class CreateRecommendedWorkoutExerciseMessageService
   end
 
   def call
-    done_exercise_ids = UserExerciseLog.where(user_id: workout.user_id, workout_id: workout.id).pluck(:exercise_id).uniq
-    recommend_exercise = MenuExercise.where(menu_id: workout.menu_id).where.not(exercise_id: done_exercise_ids).order(sort: :asc).first.exercise
+    recommend_exercise = ::FetchUnfinishedExercisesService.call(workout_id: workout.id)&.first
 
-    head_message = done_exercise_ids.blank? ? '最初の' : '次の'
+    head_message = first_exercise?(recommend_exercise) ? '最初の' : '次の'
 
     WorkoutMessage.create!(
       workout_id: workout.id,
@@ -28,5 +27,11 @@ class CreateRecommendedWorkoutExerciseMessageService
       message_type: WorkoutMessage.message_types[:assistant],
       next_action_type: WorkoutMessage.next_action_types[:user_choose_exercise],
     )
+  end
+
+  private
+
+  def first_exercise?(recommend_exercise)
+    recommend_exercise == workout.menu.menu_exercises.order(sort: :asc).first
   end
 end

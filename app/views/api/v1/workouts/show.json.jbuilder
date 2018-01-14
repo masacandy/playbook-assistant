@@ -1,4 +1,4 @@
-json.workout_messages @workout.workout_messages, :message, :message_type, :next_action_type
+json.workout_messages @workout.workout_messages.order(id: :asc), :message, :message_type, :next_action_type
 json.current_menu_id @workout.menu_id
 
 json.current_exercise do

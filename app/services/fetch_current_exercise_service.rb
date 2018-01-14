@@ -54,10 +54,8 @@ class FetchCurrentExerciseService
   end
 
   def next_exercise
-    menu_exercise = MenuExercise.find_by(
-      menu_id: workout.menu_id,
-      sort: current_menu_exercise.sort + 1,
-    )
+    recommend_next_exercise = ::FetchUnfinishedExercisesService.call(workout_id: @workout.id).first
+    menu_exercise = workout.menu.menu_exercises.find_by(exercise_id: recommend_next_exercise.id)
 
     CurrentExercise.new(
       menu_exercise.exercise_id,

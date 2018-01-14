@@ -1,7 +1,7 @@
+= content_for(:javascript_pack_tag, javascript_pack_tag('workout_message_container', 'data-turbolinks-track':'reload'))
+
 h1 ワークアウト
 
-.div
-  p
-    = "今日も#{@workout.menu.name}のワークアウトの始まりだ"
+= link_to 'ワークアウト終了', workout_finish_index_path(workout_id: params[:id])
 
-= javascript_pack_tag 'workout_message_container'
+#workout-container
