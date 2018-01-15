@@ -1,6 +1,4 @@
 class Api::V1::Workouts::Messages::Exercises::ChooseController < Api::V1::BaseController
-  protect_from_forgery except: :create
-
   CurrentExercise = Struct.new(:id, :rep, :latest_weight)
 
   def create

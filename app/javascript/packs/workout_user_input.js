@@ -21,11 +21,15 @@ class UserInputWeight extends React.Component {
   }
 
   handleSubmit(event) {
-    const url = '/api/v1/workouts/messages/weights'
+    const url = '/api/v1/workouts/messages/weights';
+    const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 
     return fetch(url, {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      headers: {
+        'Content-Type':'application/json'
+        'X-CSRF-Token': csrfToken
+      },
       credentials: 'same-origin',
       body: JSON.stringify({
         "workout_id": gon.workout_id,
@@ -108,12 +112,16 @@ class UserInputReps extends React.Component {
   }
 
   handleClick(event) {
-    const url = '/api/v1/workouts/messages/reps'
+    const url = '/api/v1/workouts/messages/reps';
+    const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 
     return fetch(url, {
       method: 'POST',
       credentials: 'same-origin',
-      headers: {'Content-Type':'application/json'},
+      headers: {
+        'Content-Type':'application/json'
+        'X-CSRF-Token': csrfToken
+      },
       body: JSON.stringify({
         "workout_id": gon.workout_id,
         "menu_id": this.props.menuId,
@@ -135,12 +143,16 @@ class UserInputReps extends React.Component {
   }
 
   handleSkipExercise(event) {
-    const url = '/api/v1/workouts/messages/skip'
+    const url = '/api/v1/workouts/messages/skip';
+    const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 
     return fetch(url, {
       method: 'POST',
       credentials: 'same-origin',
-      headers: {'Content-Type':'application/json'},
+      headers: {
+        'Content-Type':'application/json'
+        'X-CSRF-Token': csrfToken,
+      },
       body: JSON.stringify({
         "workout_id": gon.workout_id,
         "exercise_id": this.props.exerciseId,
@@ -212,12 +224,16 @@ class UserSelectExercise extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const url = '/api/v1/workouts/messages/exercises/select'
+    const url = '/api/v1/workouts/messages/exercises/select';
+    const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 
     return fetch(url, {
       method: 'POST',
       credentials: 'same-origin',
-      headers: {'Content-Type':'application/json'},
+      headers: {
+        'Content-Type':'application/json'
+        'X-CSRF-Token': csrfToken,
+      },
       body: JSON.stringify({
         "workout_id": gon.workout_id,
         "exercise_id": this.state.exerciseId,
@@ -266,13 +282,17 @@ class UserChooseExercise extends React.Component {
   }
 
   handleClick(event) {
-    const url = '/api/v1/workouts/messages/exercises/choose'
-    const answer = event.target.value === "はい" ? true : false
+    const url = '/api/v1/workouts/messages/exercises/choose';
+    const answer = event.target.value === "はい" ? true : false;
+    const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 
     return fetch(url, {
       method: 'POST',
       credentials: 'same-origin',
-      headers: {'Content-Type':'application/json'},
+      headers: {
+        'Content-Type':'application/json',
+        'X-CSRF-Token': csrfToken,
+      },
       body: JSON.stringify({
         "workout_id": gon.workout_id,
         "exercise_id": this.props.exerciseId,

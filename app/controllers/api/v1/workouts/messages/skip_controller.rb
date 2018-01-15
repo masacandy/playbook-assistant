@@ -1,6 +1,4 @@
 class Api::V1::Workouts::Messages::SkipController < Api::V1::BaseController
-  protect_from_forgery except: :create
-
   ZERO_WEIGHT = 0
   ZERO_REPS = 0
 

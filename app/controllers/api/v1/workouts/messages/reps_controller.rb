@@ -1,6 +1,4 @@
 class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
-  protect_from_forgery except: :create
-
   before_action :find_menu_exercise
 
   def create

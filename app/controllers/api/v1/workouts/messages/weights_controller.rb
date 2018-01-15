@@ -1,6 +1,4 @@
 class Api::V1::Workouts::Messages::WeightsController < Api::V1::BaseController
-  protect_from_forgery except: :create
-
   def create
     create_first_log if first_input_exercise_weight?
 
