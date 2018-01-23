@@ -1,4 +1,6 @@
 class Api::V1::Workouts::Messages::WeightsController < Api::V1::BaseController
+  before_action :authenticate_workout_user!
+
   def create
     create_first_log if first_input_exercise_weight?
 

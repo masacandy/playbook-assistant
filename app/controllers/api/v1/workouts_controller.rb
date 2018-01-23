@@ -1,4 +1,6 @@
 class Api::V1::WorkoutsController < Api::V1::BaseController
+  before_action :authenticate_workout_user_from_id!
+
   def show
     @workout = Workout.find(params[:id])
 

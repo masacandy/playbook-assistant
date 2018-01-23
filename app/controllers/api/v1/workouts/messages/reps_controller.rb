@@ -1,4 +1,5 @@
 class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
+  before_action :authenticate_workout_user!
   before_action :find_menu_exercise
 
   def create

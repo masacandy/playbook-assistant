@@ -57,3 +57,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'gon'
 gem 'devise'
 gem 'slim-rails'
+gem 'materialize-sass'

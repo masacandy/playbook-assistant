@@ -10,7 +10,7 @@ import { ChatFeed, Message } from 'react-chat-ui'
 
 function skipExercise(json) {
   const messages = json.workout_messages
-  const chatMessages = createMessages(json.workout_messages);
+  const chatMessages = json.workout_messages;
 
   return {
     type: 'SKIP_EXERCISE',
@@ -33,7 +33,7 @@ function createMessages(messages) {
 
 function selectExercise(json) {
   const messages = json.workout_messages
-  const chatMessages = createMessages(json.workout_messages);
+  const chatMessages = json.workout_messages;
 
   return {
     type: 'SELECT_EXERCISE',
@@ -48,7 +48,7 @@ function selectExercise(json) {
 
 function chooseExercise(json) {
   const messages = json.workout_messages
-  const chatMessages = createMessages(json.workout_messages);
+  const chatMessages = json.workout_messages;
 
   return {
     type: 'CHOOSE_EXERCISE',
@@ -62,7 +62,7 @@ function chooseExercise(json) {
 
 function sendReps(json) {
   const messages = json.workout_messages
-  const chatMessages = createMessages(json.workout_messages);
+  const chatMessages = json.workout_messages;
 
   return {
     type: 'SEND_REPS',
@@ -77,7 +77,7 @@ function sendReps(json) {
 
 function sendWeight(json) {
   const messages = json.workout_messages
-  const chatMessages = createMessages(json.workout_messages);
+  const chatMessages = json.workout_messages;
 
   return {
     type: 'SEND_WEIGHT',
@@ -89,7 +89,7 @@ function sendWeight(json) {
 
 function setWorkouts(json) {
   const messages = json.workout_messages
-  const chatMessages = createMessages(json.workout_messages);
+  const chatMessages = json.workout_messages;
 
   return {
     type: 'INDEX',
@@ -274,15 +274,16 @@ class WorkoutMessageContainer extends React.Component {
     }
 
     return (
-      <div>
-        <ChatFeed
-          messages={this.props.workoutMessages}
-          isTyping={false}
-          hasInputField={false}
-          showSenderName={false}
-          bubblesCentered={false}
-        />
-        {userInput}
+      <div style={{
+        paddingTop: '66px',
+      }}
+      >
+        <div className="container">
+          <WorkoutMessageList workoutMessages={this.props.workoutMessages} />
+        </div>
+        <div>
+          {userInput}
+        </div>
         {finishWorkoutButton}
         <div ref={(el) => { this.messagesEnd = el; }}>
         </div>

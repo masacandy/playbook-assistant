@@ -4,13 +4,17 @@
     <title>PlaybookAssistant</title>
     <%= Gon::Base.render_data %>
     <%= csrf_meta_tags %>
-
+    <meta name='viewport' content='width=device-width, maximum-scale=1.0, minimum-scale=0.5, user-scalable=no, initial-scale=1.0'>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= yield(:javascript_pack_tag) %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'app_bar', 'data-turbolinks-track':'reload' %>
+
   </head>
 
-  <body>
+  <body style="margin: 0">
+    <div id="app_bar"></div>
+
     <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
     <%= yield %>

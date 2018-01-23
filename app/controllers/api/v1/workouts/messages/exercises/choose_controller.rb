@@ -1,4 +1,6 @@
 class Api::V1::Workouts::Messages::Exercises::ChooseController < Api::V1::BaseController
+  before_action :authenticate_workout_user!
+
   CurrentExercise = Struct.new(:id, :rep, :latest_weight)
 
   def create

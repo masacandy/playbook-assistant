@@ -1,4 +1,6 @@
 class Api::V1::Workouts::Messages::SkipController < Api::V1::BaseController
+  before_action :authenticate_workout_user!
+
   ZERO_WEIGHT = 0
   ZERO_REPS = 0
 
