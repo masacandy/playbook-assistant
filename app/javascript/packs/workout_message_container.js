@@ -275,7 +275,7 @@ class WorkoutMessageContainer extends React.Component {
 
     return (
       <div style={{
-        paddingTop: '66px',
+        paddingTop: '16px',
       }}
       >
         <div className="container">

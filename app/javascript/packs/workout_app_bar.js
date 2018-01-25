@@ -47,7 +47,6 @@ class AppBarReact extends React.Component {
           onLeftIconButtonClick={this.handleOpen}
           style={{
             position: 'fixed',
-            marginTop: '-14px',
           }}
         />
         <Dialog

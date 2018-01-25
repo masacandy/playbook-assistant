@@ -1,4 +1,5 @@
 class Web::WorkoutsController < Web::BaseController
+  before_action :authenticate_user!
   before_action :set_workout, :authenticate_workout_user!, only: %i(show)
 
   def show

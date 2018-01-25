@@ -19,16 +19,28 @@ class Logout extends React.Component {
   }
 }
 
+class Login extends React.Component {
+  static muiName = 'FlatButton';
+
+  render() {
+    const loginPath = '/users/sign_in';
+
+    return (
+      <FlatButton {...this.props} label="LogIN" href={loginPath}/>
+    );
+  }
+}
+
 class AppBarReact extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    let logout;
+    let button = <Login />
 
     if (gon.logged) {
-      logout = <Logout />
+      button = <Logout />
     }
 
     return (
@@ -36,10 +48,9 @@ class AppBarReact extends React.Component {
         <AppBar
           title="週２筋トレ部"
           showMenuIconButton={false}
-          iconElementRight={logout}
+          iconElementRight={button}
           style={{
             position: 'fixed',
-            marginTop: '-14px',
           }}
         />
       </div>
@@ -55,7 +66,8 @@ const App = () => {
   )
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('turbolinks:load', () => {
+//document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
     <App />,
     document.getElementById('app_bar')

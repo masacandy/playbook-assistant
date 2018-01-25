@@ -1,4 +1,6 @@
 class Web::Workouts::FinishController < Web::BaseController
+  before_action :authenticate_user!
+
   def index
     workout = Workout.find(params[:workout_id])
 

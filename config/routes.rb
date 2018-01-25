@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations'
+  }
+
   # 暫定対策
   # https://qiita.com/colorrabbit/items/5545fce7e5cd4e494396
   devise_scope :user do

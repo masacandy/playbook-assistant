@@ -1,6 +1,4 @@
 class Web::BaseController < ApplicationController
-  before_action :authenticate_user!
-
   def authenticate_workout_user!
     workout = Workout.find(params[:workout_id])
     return if current_user.id == workout.user_id

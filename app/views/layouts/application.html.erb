@@ -13,9 +13,14 @@
 
   <body style="margin: 0">
     <div id="app_bar"></div>
+    <div style="padding-top: 56px"></div>
 
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <%- if notice || alert %>
+      <div class="container" style="padding-top: 16px;">
+        <p class="notice" style="color: #00bfa5;"><%= notice %></p>
+        <p class="alert" style="color: #f44336;"><%= alert %></p>
+      </div>
+    <%- end %>
     <%= yield %>
   </body>
 </html>
