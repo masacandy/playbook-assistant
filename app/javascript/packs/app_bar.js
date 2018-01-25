@@ -6,65 +6,42 @@ import MenuItem from 'material-ui/MenuItem';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
-import Dialog from 'material-ui/Dialog';
+
+class Logout extends React.Component {
+  static muiName = 'FlatButton';
+
+  render() {
+    const logoutPath = '/users/sign_out';
+
+    return (
+      <FlatButton {...this.props} label="Logout" href={logoutPath}/>
+    );
+  }
+}
 
 class AppBarReact extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {open: false};
   }
 
-  handleOpen = () => {
-    this.setState({open: true});
-  };
-
-  handleClose = () => {
-    this.setState({open: false});
-  };
-
   render() {
-    const finishPath = "/user/workouts/" + gon.workout_id + "/finish";
+    let logout;
 
-    const actions = [
-      <FlatButton
-        label="キャンセル"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="ワークアウトの終了"
-        primary={true}
-        href={finishPath}
-      />,
-    ];
-
-    let showMenuIcon = true
-
-    if (gon.app_bar_type == 1) {
-      showMenuIcon = false
+    if (gon.logged) {
+      logout = <Logout />
     }
 
     return (
       <div>
         <AppBar
-          title={gon.title}
-          showMenuIconButton={showMenuIcon}
-          iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-          onLeftIconButtonClick={this.handleOpen}
+          title="週２筋トレ部"
+          showMenuIconButton={false}
+          iconElementRight={logout}
           style={{
             position: 'fixed',
             marginTop: '-14px',
           }}
         />
-        <Dialog
-          title="途中終了"
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-        >
-        1度終了したワークアウトは途中から再開することはできませんがよろしいですか？
-        </Dialog>
       </div>
     )
   }

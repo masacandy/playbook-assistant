@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
   devise_for :users
+  # 暫定対策
+  # https://qiita.com/colorrabbit/items/5545fce7e5cd4e494396
+  devise_scope :user do
+    get '/users/sign_out' => 'devise/sessions#destroy'
+  end
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'web/top#index'
 
