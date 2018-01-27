@@ -241,13 +241,21 @@ class UserSelectExercise extends React.Component {
   }
 
   fetchUndoneExercises(id) {
-    const params = { workout_id: id, menu_id: this.props.menuId };
-    const urlParams = new URLSearchParams(Object.entries(params));
+    var params = {
+      workout_id: id,
+      menu_id: this.props.menuId,
+    };
 
-    const url = '/api/v1/workouts/messages/exercises/unfinished?' + urlParams
+    var esc = encodeURIComponent;
+    var query = Object.keys(params)
+        .map(k => esc(k) + '=' + esc(params[k]))
+        .join('&');
 
-    return fetch(url, { credentials: 'same-origin' }
-    )
+    const url = '/api/v1/workouts/messages/exercises/unfinished?' + query
+
+    return fetch(url, {
+      credentials: 'same-origin',
+    })
     .then((response) => {
       if (!response.ok) throw new Error("invalid");
       return response.json();
