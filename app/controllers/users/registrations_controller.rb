@@ -7,10 +7,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # POST /resource
-  # def create
-  #   super
-  # end
+  #POST /resource
+  def create
+    super
+    create_user_menus
+  end
 
   # GET /resource/edit
   # def edit
@@ -35,6 +36,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def cancel
   #   super
   # end
+
+  private
+
+  def create_user_menus
+    Menu.where(id: [1,2]).each do |menu|
+      UserMenu.create!(user_id: current_user.id, menu_id: menu.id)
+    end
+  end
 
   # protected
 

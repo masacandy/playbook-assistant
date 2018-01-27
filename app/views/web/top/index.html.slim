@@ -27,4 +27,7 @@
                 = form.hidden_field :menu_id, value: menu.id
                 = form.submit "このワークアウトのスタート", class: "waves-effect waves-light btn-flat", style: "padding-left: 0;color:rgb(0, 188, 212);"
 - else
-  h2 週２回のワークアウトをサポート
+  .container
+    h2(style="font-size: 1.56rem") 週２回のワークアウトをサポート
+
+    = link_to "ログイン", new_user_session_path, class: 'waves-effect waves-teal btn', style: 'color: white; background-color: rgb(0, 188, 212); margin-top: 8px;'

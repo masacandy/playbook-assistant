@@ -35,6 +35,10 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+group :production do
+  gem 'rails_12factor'
+end
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -58,3 +62,6 @@ gem 'gon'
 gem 'devise'
 gem 'slim-rails'
 gem 'materialize-sass'
+
+# Added at 2018-01-26 23:10:12 +0900 by James:
+gem "appengine", "~> 0.4.5"
