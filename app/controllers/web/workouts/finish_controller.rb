@@ -4,8 +4,8 @@ class Web::Workouts::FinishController < Web::BaseController
   def index
     workout = Workout.find(params[:workout_id])
 
-    gon.app_bar_type = 1
     gon.title = "#{workout.menu.name}のワークアウト終了"
+    gon.logged = true
 
     return if workout.finished_at.present?
 
