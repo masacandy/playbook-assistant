@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import thunk from 'redux-thunk';
-import PropTypes from 'prop-types'
 import WorkoutMessageList from './workout_message_list';
 import WorkoutUserInput from './workout_user_input';
 import { applyMiddleware, createStore } from 'redux';

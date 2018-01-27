@@ -61,16 +61,18 @@ class UserInputWeight extends React.Component {
 
   render() {
     return (
-      <div className="UserInputWeight">
+      <div className="UserInputWeight container">
         <div className="col s12">
+          重量
+        </div>
+        <div className="col s12 center">
           <div className="input-field inline">
             <input type='number' value={this.state.weight} onChange={this.changeWeight} onKeyPress={this.handleEnter} />
           </div>
           kg
         </div>
-        <button onClick={this.handleSubmit}>
-          Submit
-        </button>
+
+        <FlatButton label="重さを決定" primary={true} onClick={this.handleSubmit} fullWidth={true} />
       </div>
     );
   }
@@ -80,7 +82,7 @@ const repsButtonStyle = {
   border: '1px solid #039be5',
   backgroundColor: 'white',
   borderRadius: '8px',
-  width: '80%',
+  width: '100%',
   height: '100%',
   color: '#039be5',
   fontSize: '1.8rem',
