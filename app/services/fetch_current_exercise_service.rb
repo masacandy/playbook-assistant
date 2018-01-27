@@ -50,6 +50,7 @@ class FetchCurrentExerciseService
   end
 
   def next_exercise?
+    return false if last_exercise_set_count.nil?
     last_exercise_set_count == last_exercise_set_count_from_log
   end
 

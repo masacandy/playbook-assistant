@@ -5,6 +5,8 @@ import WorkoutUserInput from './workout_user_input';
 import { applyMiddleware, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import { ChatFeed, Message } from 'react-chat-ui'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
 
 function skipExercise(json) {
   const messages = json.workout_messages
@@ -215,7 +217,9 @@ const FinishWorkoutButton = () => {
 
   return (
     <div className="FinishWorkoutButton">
-      <a href="" onClick={e => click(e)}>Finish</a>
+      <MuiThemeProvider>
+        <RaisedButton label="TOPページへ戻る" primary={true} onClick={e => click(e)} fullWidth={true} />
+      </MuiThemeProvider>
     </div>
   );
 };
