@@ -6,6 +6,7 @@ class Web::Workouts::FinishController < Web::BaseController
 
     gon.title = "#{workout.menu.name}のワークアウト終了"
     gon.logged = true
+    gon.workout_id = params[:workout_id]
 
     return if workout.finished_at.present?
 

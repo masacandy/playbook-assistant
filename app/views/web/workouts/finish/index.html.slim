@@ -1,8 +1,7 @@
 = content_for(:app_bar, javascript_pack_tag('app_bar', 'data-turbolinks-track':'reload'))
+= content_for(:javascript_pack_tag, javascript_pack_tag('workout_log_container', 'data-turbolinks-track':'reload'))
 
 .container(style="padding-top: 16px;")
-  p お疲れ様でした
+  p(style="margin-bottom: -20px;") お疲れ様でした。本日のワークアウト記録です。
 
-  - # ログを表示
-
-  = link_to 'トップへ', root_path, data: {"turbolinks" => false}
+#workout-log

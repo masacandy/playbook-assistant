@@ -4,7 +4,6 @@ import WorkoutMessageList from './workout_message_list';
 import WorkoutUserInput from './workout_user_input';
 import { applyMiddleware, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
-import { ChatFeed, Message } from 'react-chat-ui'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 

@@ -18,7 +18,10 @@ Rails.application.routes.draw do
       if Rails.env.development?
         resources :test, only: %i[index]
       end
-      resources :workouts, only: %[show]
+
+      resources :workouts, only: %[show] do
+        resources :finished_log, only: %[index]
+      end
 
       namespace :workouts do
         namespace :messages do
