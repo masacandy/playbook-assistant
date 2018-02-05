@@ -27,7 +27,30 @@
                 = form.hidden_field :menu_id, value: menu.id
                 = form.submit "このワークアウトのスタート", class: "waves-effect waves-light btn-flat", style: "padding-left: 0;color:rgb(0, 188, 212);"
 - else
-  .container
-    h2(style="font-size: 1.56rem") 週２回のワークアウトをサポート
+  .col.s12.valign-wrapper(style="padding-top: 8px")
+    = image_tag("top/top.png", class: 'responsive-img center')
 
-    = link_to "ログイン", new_user_session_path, class: 'waves-effect waves-teal btn', style: 'color: white; background-color: rgb(0, 188, 212); margin-top: 8px;'
+  .container.center
+    h2(style="font-size: 1.4rem")
+      |チャット形式で
+      br
+      |あなたのワークアウトをサポート
+
+    hr
+
+    p
+      | チャット形式なので面倒なボタン操作が不要
+      br
+      br
+      | 履歴から重量を提案
+      br
+      br
+      | 記録を後から振り返りやすい
+
+    hr
+
+    .row
+      = link_to "アカウント作成", new_user_registration_path, class: 'col s12 waves-effect waves-teal btn', style: 'color: white; background-color: rgb(0, 188, 212); margin-top: 8px;'
+    p アカウントをお持ちの方は
+    .row
+      = link_to "ログイン", new_user_session_path, class: 'col s12 waves-effect waves-teal btn', style: 'color: white; background-color: rgb(0, 188, 212); margin-top: 8px;'
