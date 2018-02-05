@@ -22,7 +22,7 @@
 /node_modules
 /vendor/*
 /public/assets
-secret.yaml
+app_secret.yaml
 
 # Ignore encrypted secrets key file.
 config/secrets.yml.key

@@ -3,4 +3,4 @@ env: flex
 runtime: ruby
 
 includes:
-  - secret.yaml
+  - app_secret.yaml
