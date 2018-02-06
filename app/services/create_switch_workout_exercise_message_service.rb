@@ -37,7 +37,7 @@ class CreateSwitchWorkoutExerciseMessageService
         WorkoutMessage.next_action_types[:assistant_message]
       ))
       messages.push(BaseWorkoutMessage.new(
-        "今回の推奨は#{last_user_last_exercise_log + 2.5}kgです。",
+        "今回の推奨は#{last_user_last_exercise_log.weight + 2.5}kgです。",
         WorkoutMessage.next_action_types[:assistant_message]
       ))
       messages.push(BaseWorkoutMessage.new(
