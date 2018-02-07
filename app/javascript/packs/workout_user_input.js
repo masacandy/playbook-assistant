@@ -107,10 +107,25 @@ const RepsButtons = (props) => {
   );
 };
 
+const SendingReps = () => {
+  return (
+    <div className="SendingReps col s12" style={{marginTop: '16px', marginBottom: '-8px' }} >
+      <p className="center" style={{fontSize: '1.5rem', fontWeight: 'bold'}}>送信中・・・</p>
+    </div>
+  );
+};
+
+
 const SkipExerciseButton = (props) => {
   return (
     <div className="SkipExerciseButton">
-      <RaisedButton label="このエクササイズをスキップする" secondary={true} onClick={props.handleSkipExercise} fullWidth={true} />
+      <RaisedButton label="このエクササイズをスキップする"
+        secondary={true}
+        onClick={props.handleSkipExercise}
+        fullWidth={true}
+        disabled={props.disabled}
+        disabledBackgroundColor={'gray'}
+      />
     </div>
   );
 };
@@ -122,6 +137,7 @@ class UserInputReps extends React.Component {
     super(props);
     this.state = {
       weight: this.props.weight,
+      isLoading: false,
     }
 
     this.changeWeight = this.changeWeight.bind(this);
@@ -136,6 +152,8 @@ class UserInputReps extends React.Component {
   }
 
   handleClick(event) {
+    this.setState({ isLoading: true })
+
     const url = '/api/v1/workouts/messages/reps';
     const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 
@@ -159,14 +177,20 @@ class UserInputReps extends React.Component {
       return response.json();
     })
     .then((json) => {
+      this.setState({ isLoading: false })
+
       return this.props.sendReps(json)
     })
     .catch((err) => {
+      this.setState({ isLoading: false })
+
       console.error(err);
     });
   }
 
   handleSkipExercise(event) {
+    this.setState({ isLoading: true })
+
     const url = '/api/v1/workouts/messages/skip';
     const csrfToken = document.getElementsByName('csrf-token').item(0).content;
 
@@ -187,14 +211,24 @@ class UserInputReps extends React.Component {
       return response.json();
     })
     .then((json) => {
+      this.setState({ isLoading: false })
+
       return this.props.skipExercise(json)
     })
     .catch((err) => {
+      this.setState({ isLoading: false })
+
       console.error(err);
     });
   }
 
   render() {
+    let repsButtonsField = <RepsButtons className="col s12" exerciseReps={this.props.exerciseReps} handleClick={this.handleClick} />
+
+    if (this.state.isLoading) {
+      repsButtonsField = <SendingReps className="center" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}/>
+    }
+
     return(
       <div>
         <div className="UserInputReps row">
@@ -214,11 +248,11 @@ class UserInputReps extends React.Component {
               <hr style={{borderTopWidth: '0'}}/>
               回数
             </div>
-            <RepsButtons className="col s12" exerciseReps={this.props.exerciseReps} handleClick={this.handleClick} />
+            {repsButtonsField}
           </div>
         </div>
 
-        <SkipExerciseButton handleSkipExercise={this.handleSkipExercise} />
+        <SkipExerciseButton handleSkipExercise={this.handleSkipExercise} disabled={this.state.isLoading} />
       </div>
     );
   }
@@ -230,6 +264,7 @@ class UserSelectExercise extends React.Component {
     this.state = {
       unfinishedExercises: [],
       exerciseId: null,
+      isLoading: false,
     }
 
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -273,6 +308,8 @@ class UserSelectExercise extends React.Component {
   };
 
   handleSubmit(event) {
+    this.setState = { isLoading: true }
+
     event.preventDefault();
     const url = '/api/v1/workouts/messages/exercises/select';
     const csrfToken = document.getElementsByName('csrf-token').item(0).content;
@@ -295,9 +332,13 @@ class UserSelectExercise extends React.Component {
       return response.json();
     })
     .then((json) => {
+      this.setState = { isLoading: false }
+
       return this.props.selectExercise(json)
     })
     .catch((err) => {
+      this.setState = { isLoading: false }
+
       console.error(err);
     });
   }
@@ -321,7 +362,7 @@ class UserSelectExercise extends React.Component {
           {options}
         </select>
 
-        <RaisedButton label="決定" primary={true} onClick={this.handleSubmit} fullWidth={true} />
+        <RaisedButton label="決定" primary={true} onClick={this.handleSubmit} fullWidth={true} disabled={this.state.isLoading} disabledBackgroundColor='gray' />
       </div>
     );
   }
@@ -330,12 +371,17 @@ class UserSelectExercise extends React.Component {
 class UserChooseExercise extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isLoading: false,
+    }
 
     this.yesClick = this.handleClick.bind(this, true);
     this.noClick = this.handleClick.bind(this, false);
   }
 
   handleClick(answer) {
+    this.setState = { isLoading: true }
+
     const url = '/api/v1/workouts/messages/exercises/choose';
     const csrfToken = document.getElementsByName('csrf-token').item(0).content;
     console.log(answer);
@@ -359,9 +405,13 @@ class UserChooseExercise extends React.Component {
       return response.json();
     })
     .then((json) => {
+      this.setState = { isLoading: false }
+
       return this.props.chooseExercise(json)
     })
     .catch((err) => {
+      this.setState = { isLoading: false }
+
       console.error(err);
     });
   }
@@ -374,6 +424,7 @@ class UserChooseExercise extends React.Component {
           primary={true}
           onClick={this.yesClick}
           className="col s6"
+          disabled={this.state.isLoading}
         />
 
         <FlatButton
@@ -381,6 +432,7 @@ class UserChooseExercise extends React.Component {
           primary={false}
           onClick={this.noClick}
           className="col s6"
+          disabled={this.state.isLoading}
         />
       </div>
     );
