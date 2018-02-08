@@ -50,6 +50,7 @@ class UserInputWeight extends React.Component {
     })
     .catch((err) => {
       console.error(err);
+      return this.props.showErrorLog()
     });
   }
 
@@ -183,8 +184,8 @@ class UserInputReps extends React.Component {
     })
     .catch((err) => {
       this.setState({ isLoading: false })
-
       console.error(err);
+      return this.props.showErrorLog()
     });
   }
 
@@ -217,8 +218,8 @@ class UserInputReps extends React.Component {
     })
     .catch((err) => {
       this.setState({ isLoading: false })
-
       console.error(err);
+      return this.props.showErrorLog()
     });
   }
 
@@ -304,6 +305,7 @@ class UserSelectExercise extends React.Component {
     })
     .catch((err) => {
       console.error(err);
+      return this.props.showErrorLog()
     });
   };
 
@@ -338,8 +340,8 @@ class UserSelectExercise extends React.Component {
     })
     .catch((err) => {
       this.setState = { isLoading: false }
-
       console.error(err);
+      return this.props.showErrorLog()
     });
   }
 
@@ -406,13 +408,14 @@ class UserChooseExercise extends React.Component {
     })
     .then((json) => {
       this.setState = { isLoading: false }
+      return this.props.showErrorLog()
 
       return this.props.chooseExercise(json)
     })
     .catch((err) => {
       this.setState = { isLoading: false }
-
       console.error(err);
+      return this.props.showErrorLog()
     });
   }
 
@@ -450,13 +453,13 @@ class WorkoutUserInput extends React.Component {
     let userInput = null;
 
     if (nextActionType === 'user_input_weight') {
-      userInput = <UserInputWeight sendWeight={this.props.sendWeight} menuId={this.props.menuId} exerciseId={this.props.exerciseId} />
+      userInput = <UserInputWeight sendWeight={this.props.sendWeight} menuId={this.props.menuId} exerciseId={this.props.exerciseId} showErrorLog={this.props.showErrorLog} />
     } else if (nextActionType === 'user_input_reps') {
-      userInput = <UserInputReps sendReps={this.props.sendReps} menuId={this.props.menuId} exerciseId={this.props.exerciseId} exerciseReps={this.props.exerciseReps} weight={this.props.weight} skipExercise={this.props.skipExercise} />
+      userInput = <UserInputReps sendReps={this.props.sendReps} menuId={this.props.menuId} exerciseId={this.props.exerciseId} exerciseReps={this.props.exerciseReps} weight={this.props.weight} skipExercise={this.props.skipExercise} showErrorLog={this.props.showErrorLog} />
     } else if (nextActionType === 'user_select_exercise') {
-      userInput = <UserSelectExercise menuId={this.props.menuId} selectExercise={this.props.selectExercise} />
+      userInput = <UserSelectExercise menuId={this.props.menuId} selectExercise={this.props.selectExercise} showErrorLog={this.props.showErrorLog} />
     } else if (nextActionType === 'user_choose_exercise') {
-      userInput = <UserChooseExercise exerciseId={this.props.exerciseId} menuId={this.props.menuId} chooseExercise={this.props.chooseExercise} />
+      userInput = <UserChooseExercise exerciseId={this.props.exerciseId} menuId={this.props.menuId} chooseExercise={this.props.chooseExercise} showErrorLog={this.props.showErrorLog} />
     }
 
     if (userInput) {

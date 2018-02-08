@@ -6,6 +6,15 @@ import { applyMiddleware, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
+
+function showErrorLog() {
+  return {
+    type: 'SHOW_ERROR_DIALOG',
+    nextActionType: 'error_dialog',
+  }
+}
 
 function skipExercise(json) {
   const messages = json.workout_messages
@@ -156,6 +165,12 @@ function formReducer(state, action) {
         currentExerciseId: action.currentExerciseId,
         currentExerciseReps: action.currentExerciseReps,
       });
+    case 'SHOW_ERROR_DIALOG':
+      return Object.assign({}, state, {
+        type: 'SHOW_ERROR_DIALOG',
+        nextActionType: action.nextActionType,
+        openDialog: true,
+      });
 
     default:
       return state;
@@ -168,6 +183,7 @@ const initialState = {
   nextActionType: 'assistant_message',
   currentMenuId: null,
   currentExerciseId: null,
+  openDialog: false,
 };
 
 const store = createStore(formReducer, initialState);
@@ -182,6 +198,7 @@ function mapStateToProps(state) {
     currentMenuId: state.currentMenuId,
     currentExerciseReps: state.currentExerciseReps,
     currentExerciseWeight: state.currentExerciseWeight,
+    openDialog: state.openDialog,
   };
 }
 
@@ -204,6 +221,9 @@ function mapDispatchToProps(dispatch) {
     },
     skipExercise: (json) => {
       dispatch(skipExercise(json))
+    },
+    showErrorLog: (json) => {
+      dispatch(showErrorLog())
     },
   };
 }
@@ -234,8 +254,6 @@ class WorkoutMessageContainer extends React.Component {
   }
 
   fetchMessages(id, setWorkouts) {
-//    const params = { workout_id: id };
-//    const urlParams = new URLSearchParams(Object.entries(params));
     const url = '/api/v1/workouts/' + id;
 
     return fetch(url, { credentials: 'same-origin' }
@@ -257,6 +275,10 @@ class WorkoutMessageContainer extends React.Component {
     this.messagesEnd.scrollIntoView({ behavior: "smooth" });
   }
 
+  refreshPage = () => {
+    window.location.reload()
+  }
+
   componentDidUpdate() {
     this.scrollToBottom();
   }
@@ -265,7 +287,7 @@ class WorkoutMessageContainer extends React.Component {
     let userInput = null;
 
     if (this.props.nextActionType !== 'assistant_message') {
-      userInput = <WorkoutUserInput nextActionType={this.props.nextActionType} sendWeight={this.props.sendWeight} sendReps={this.props.sendReps} menuId={this.props.currentMenuId} exerciseId={this.props.currentExerciseId} exerciseReps={this.props.currentExerciseReps} weight={this.props.currentExerciseWeight} chooseExercise={this.props.chooseExercise} selectExercise={this.props.selectExercise} skipExercise={this.props.skipExercise} />
+      userInput = <WorkoutUserInput nextActionType={this.props.nextActionType} sendWeight={this.props.sendWeight} sendReps={this.props.sendReps} menuId={this.props.currentMenuId} exerciseId={this.props.currentExerciseId} exerciseReps={this.props.currentExerciseReps} weight={this.props.currentExerciseWeight} chooseExercise={this.props.chooseExercise} selectExercise={this.props.selectExercise} skipExercise={this.props.skipExercise} showErrorLog={this.props.showErrorLog} />
     }
 
     let finishWorkoutButton = null;
@@ -274,20 +296,35 @@ class WorkoutMessageContainer extends React.Component {
       finishWorkoutButton = <FinishWorkoutButton />
     }
 
+    const actions = [
+      <FlatButton
+        label="更新する"
+        primary={true}
+        onClick={this.refreshPage}
+      />,
+    ]
+
     return (
-      <div style={{
-        paddingTop: '16px',
-      }}
-      >
-        <div className="container">
-          <WorkoutMessageList workoutMessages={this.props.workoutMessages} />
+      <div>
+        <div style={{
+          paddingTop: '16px',
+        }}
+        >
+          <div className="container">
+            <WorkoutMessageList workoutMessages={this.props.workoutMessages} />
+          </div>
+          <div>
+            {userInput}
+          </div>
+          {finishWorkoutButton}
+          <div ref={(el) => { this.messagesEnd = el; }}>
+          </div>
         </div>
-        <div>
-          {userInput}
-        </div>
-        {finishWorkoutButton}
-        <div ref={(el) => { this.messagesEnd = el; }}>
-        </div>
+        <MuiThemeProvider>
+          <Dialog title="通信エラー" actions={actions} open={this.props.openDialog}>
+            通信エラーが発生しました。ブラウザの更新を押して通信環境のいいところで再度お試しください
+          </Dialog>
+        </MuiThemeProvider>
       </div>
     )
   }

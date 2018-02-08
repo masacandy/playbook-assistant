@@ -52,7 +52,6 @@ class AppBarReact extends React.Component {
         <Dialog
           title="途中終了"
           actions={actions}
-          modal={false}
           open={this.state.open}
           onRequestClose={this.handleClose}
         >
