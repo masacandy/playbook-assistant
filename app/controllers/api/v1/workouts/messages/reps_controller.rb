@@ -3,24 +3,26 @@ class Api::V1::Workouts::Messages::RepsController < Api::V1::BaseController
   before_action :find_menu_exercise
 
   def create
-    WorkoutMessage.create!(
-      workout_id: params[:workout_id],
-      message: "#{params[:weight]}kg, #{params[:reps]}回",
-      message_type: WorkoutMessage.message_types[:user],
-      next_action_type: WorkoutMessage.next_action_types[:assistant_message],
-    )
+    ActiveRecord::Base.transaction do
+      WorkoutMessage.create!(
+        workout_id: params[:workout_id],
+        message: "#{params[:weight]}kg, #{params[:reps]}回",
+        message_type: WorkoutMessage.message_types[:user],
+        next_action_type: WorkoutMessage.next_action_types[:assistant_message],
+      )
 
-    UserExerciseLog.create!(
-      user_id: current_user.id,
-      workout_id: params[:workout_id],
-      exercise_id: params[:exercise_id],
-      weight: params[:weight],
-      reps: params[:reps],
-    )
+      UserExerciseLog.create!(
+        user_id: current_user.id,
+        workout_id: params[:workout_id],
+        exercise_id: params[:exercise_id],
+        weight: params[:weight],
+        reps: params[:reps],
+      )
 
-    @workout = Workout.find(params[:workout_id])
+      @workout = Workout.find(params[:workout_id])
 
-    create_next_action_message
+      create_next_action_message
+    end
 
     @workout_messages = WorkoutMessage.where(workout_id: params[:workout_id]).order(id: :asc)
     @weight = params[:weight]

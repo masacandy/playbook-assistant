@@ -18,17 +18,19 @@ class Api::V1::Workouts::Messages::Exercises::SelectController < Api::V1::BaseCo
 
     exercise = Exercise.find(params[:exercise_id])
 
-    WorkoutMessage.create!(
-      workout_id: params[:workout_id],
-      message: exercise.name,
-      message_type: WorkoutMessage.message_types[:user],
-      next_action_type: WorkoutMessage.next_action_types[:assistant_message]
-    )
+    ActiveRecord::Base.transaction do
+      WorkoutMessage.create!(
+        workout_id: params[:workout_id],
+        message: exercise.name,
+        message_type: WorkoutMessage.message_types[:user],
+        next_action_type: WorkoutMessage.next_action_types[:assistant_message]
+      )
 
-    ::CreateSwitchWorkoutExerciseMessageService.call(
-      workout_id: params[:workout_id],
-      next_menu_exercise_id: params[:exercise_id]
-    )
+      ::CreateSwitchWorkoutExerciseMessageService.call(
+        workout_id: params[:workout_id],
+        next_menu_exercise_id: params[:exercise_id]
+      )
+    end
   end
 
   private

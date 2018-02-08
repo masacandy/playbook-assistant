@@ -12,21 +12,23 @@ class Api::V1::Workouts::Messages::Exercises::ChooseController < Api::V1::BaseCo
 
     message = params[:answer] == true ? 'はい' : 'いいえ、別の種目にします。'
 
-    WorkoutMessage.create!(
-      workout_id: params[:workout_id],
-      message: message,
-      message_type: WorkoutMessage.message_types[:user],
-      next_action_type: WorkoutMessage.next_action_types[:assistant_message]
-    )
+    ActiveRecord::Base.transaction do
+      WorkoutMessage.create!(
+        workout_id: params[:workout_id],
+        message: message,
+        message_type: WorkoutMessage.message_types[:user],
+        next_action_type: WorkoutMessage.next_action_types[:assistant_message]
+      )
 
-    return create_with_recommended_exercise if params[:answer] == true
+      return create_with_recommended_exercise if params[:answer] == true
 
-    WorkoutMessage.create!(
-      workout_id: params[:workout_id],
-      message: '次に行う種目を選んでください',
-      message_type: WorkoutMessage.message_types[:assistant],
-      next_action_type: WorkoutMessage.next_action_types[:user_select_exercise]
-    )
+      WorkoutMessage.create!(
+        workout_id: params[:workout_id],
+        message: '次に行う種目を選んでください',
+        message_type: WorkoutMessage.message_types[:assistant],
+        next_action_type: WorkoutMessage.next_action_types[:user_select_exercise]
+      )
+    end
   end
 
   private

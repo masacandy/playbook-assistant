@@ -2,16 +2,18 @@ class Api::V1::Workouts::Messages::WeightsController < Api::V1::BaseController
   before_action :authenticate_workout_user!
 
   def create
-    create_first_log if first_input_exercise_weight?
+    ActiveRecord::Base.transaction do
+      create_first_log if first_input_exercise_weight?
 
-    WorkoutMessage.create!(
-      workout_id: params[:workout_id],
-      message: "#{params[:weight]}kg",
-      message_type: WorkoutMessage.message_types[:user],
-      next_action_type: WorkoutMessage.next_action_types[:assistant_message],
-    )
+      WorkoutMessage.create!(
+        workout_id: params[:workout_id],
+        message: "#{params[:weight]}kg",
+        message_type: WorkoutMessage.message_types[:user],
+        next_action_type: WorkoutMessage.next_action_types[:assistant_message],
+      )
 
-    create_next_action_message
+      create_next_action_message
+    end
 
     @workout_messages = WorkoutMessage.where(workout_id: params[:workout_id]).order(id: :asc)
     @weight = params[:weight].to_i
