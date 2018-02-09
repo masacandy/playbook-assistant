@@ -11,16 +11,12 @@ class Api::V1::Workouts::Messages::SkipController < Api::V1::BaseController
     last_exercise_log = @workout&.user_exercise_logs&.where(exercise_id: exercise.id)&.last
 
     ActiveRecord::Base.transaction do
-      if last_exercise_log.present?
-        create_user_last_exercise_log(exercise_id: exercise.id, weight: last_exercise_log.weight)
-      else
-        create_empty_exercise_log(exercise.id)
-        create_user_last_exercise_log(exercise_id: exercise.id, weight: ZERO_WEIGHT)
-      end
+      # 1度でもその種目をやっていたら終わりにする。1度もログなかったらそのままスキップする
+      create_user_last_exercise_log(exercise_id: exercise.id, weight: last_exercise_log.weight) if last_exercise_log.present?
 
       WorkoutMessage.create!(
         workout_id: @workout.id,
-        message: "#{exercise.name}を終了します",
+        message: "#{exercise.name}をスキップします",
         message_type: WorkoutMessage.message_types[:user],
         next_action_type: WorkoutMessage.next_action_types[:assistant_message],
       )
