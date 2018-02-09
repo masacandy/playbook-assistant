@@ -408,7 +408,6 @@ class UserChooseExercise extends React.Component {
     })
     .then((json) => {
       this.setState = { isLoading: false }
-      return this.props.showErrorLog()
 
       return this.props.chooseExercise(json)
     })
