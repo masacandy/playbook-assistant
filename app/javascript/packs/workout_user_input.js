@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import RaisedButton from 'material-ui/RaisedButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
 
 class UserInputWeight extends React.Component {
   constructor(props) {
@@ -117,18 +118,59 @@ const SendingReps = () => {
 };
 
 
-const SkipExerciseButton = (props) => {
-  return (
-    <div className="SkipExerciseButton">
-      <RaisedButton label="このエクササイズをスキップする"
-        secondary={true}
-        onClick={props.handleSkipExercise}
-        fullWidth={true}
-        disabled={props.disabled}
-        disabledBackgroundColor={'gray'}
-      />
-    </div>
-  );
+class SkipExerciseButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: false
+    }
+  }
+
+  handleModalOpen = () => {
+    console.log('here');
+    this.setState({openModal: true});
+  };
+
+  handleModalClose = () => {
+    this.setState({openModal: false});
+  };
+
+  render() {
+    const actions = [
+      <FlatButton
+        label="キャンセル"
+        primary={true}
+        onClick={this.handleModalClose}
+      />,
+      <FlatButton
+        label="はい"
+        primary={true}
+        onClick={this.props.handleSkipExercise}
+      />,
+    ];
+
+    return (
+      <div className="SkipExerciseButton">
+        <RaisedButton label="このエクササイズをスキップする"
+          secondary={true}
+          onClick={this.handleModalOpen}
+          fullWidth={true}
+          disabled={this.props.disabled}
+          disabledBackgroundColor={'gray'}
+        />
+
+        <Dialog
+          title="途中終了"
+          actions={actions}
+          open={this.state.openModal}
+          modal={true}
+          onRequestClose={this.handleClose}
+        >
+        本当にこのエキササイズをスキップしますか？
+        </Dialog>
+      </div>
+    );
+  }
 };
 
 
