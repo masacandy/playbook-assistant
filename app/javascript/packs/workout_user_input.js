@@ -138,14 +138,14 @@ class SkipExerciseButton extends React.Component {
   render() {
     const actions = [
       <FlatButton
-        label="キャンセル"
-        primary={true}
-        onClick={this.handleModalClose}
-      />,
-      <FlatButton
         label="はい"
         primary={true}
         onClick={this.props.handleSkipExercise}
+      />,
+      <FlatButton
+        label="キャンセル"
+        primary={false}
+        onClick={this.handleModalClose}
       />,
     ];
 
@@ -160,10 +160,8 @@ class SkipExerciseButton extends React.Component {
         />
 
         <Dialog
-          title="途中終了"
           actions={actions}
           open={this.state.openModal}
-          modal={true}
           onRequestClose={this.handleClose}
         >
         本当にこのエキササイズをスキップしますか？
