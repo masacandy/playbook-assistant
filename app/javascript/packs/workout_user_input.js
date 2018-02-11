@@ -10,7 +10,8 @@ class UserInputWeight extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      weight: 0,
+      weight: null,
+      disabled: true,
     }
 
     this.changeWeight = this.changeWeight.bind(this);
@@ -21,6 +22,7 @@ class UserInputWeight extends React.Component {
   changeWeight(event) {
     this.setState({
       weight: event.target.value,
+      disabled: parseInt(event.target.value) >= 0 ? false : true,
     })
   }
 
@@ -69,12 +71,12 @@ class UserInputWeight extends React.Component {
         </div>
         <div className="col s12 center">
           <div className="input-field inline">
-            <input type='number' value={this.state.weight} onChange={this.changeWeight} onKeyPress={this.handleEnter} />
+            <input type='number' placeholder='挑戦する重さを入力' value={this.state.weight} onChange={this.changeWeight} onKeyPress={this.handleEnter} />
           </div>
           kg
         </div>
 
-        <FlatButton label="重さを決定" primary={true} onClick={this.handleSubmit} fullWidth={true} />
+        <FlatButton label="重さを決定" primary={true} onClick={this.handleSubmit} fullWidth={true} disabled={this.state.disabled} />
       </div>
     );
   }
