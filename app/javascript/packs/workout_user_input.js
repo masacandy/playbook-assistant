@@ -196,9 +196,15 @@ class UserInputReps extends React.Component {
   constructor(props) {
     super(props);
 
+    let floatWeight = String(this.props.weight).split(".")[1];
+
+    if (String(this.props.weight).split(".")[1] == undefined) {
+      floatWeight = '0';
+    }
+
     this.state = {
       intWeight: String(this.props.weight).split(".")[0],
-      floatWeight: String(this.props.weight).split(".")[1],
+      floatWeight: floatWeight,
       isLoading: false,
     }
 
