@@ -24,11 +24,15 @@ class FetchCurrentExerciseService
     CurrentExercise.new(
       first_menu_exercise.exercise_id,
       first_menu_exercise.rep,
-      latest_exercise_weight(first_menu_exercise.exercise_id)
+      exercise_weight(first_menu_exercise.exercise_id)
     )
   end
 
-  def latest_exercise_weight(exercise_id)
+  def exercise_weight(exercise_id)
+    last_exercise_weight = UserExerciseLog.where(workout: workout.id, exercise_id: exercise_id).last&.weight
+
+    return last_exercise_weight unless last_exercise_weight.nil?
+
     workout.user.user_last_exercise_logs.where(
       exercise_id: exercise_id,
     )&.last&.weight

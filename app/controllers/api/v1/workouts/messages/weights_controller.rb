@@ -16,7 +16,7 @@ class Api::V1::Workouts::Messages::WeightsController < Api::V1::BaseController
     end
 
     @workout_messages = WorkoutMessage.where(workout_id: params[:workout_id]).order(id: :asc)
-    @weight = params[:weight].to_i
+    @weight = params[:weight]
   end
 
   private

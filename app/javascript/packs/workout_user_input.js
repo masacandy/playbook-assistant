@@ -10,25 +10,35 @@ class UserInputWeight extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      weight: null,
+      intWeight: '',
+      floatWeight: '',
       disabled: true,
     }
 
-    this.changeWeight = this.changeWeight.bind(this);
+    this.changeIntWeight = this.changeIntWeight.bind(this);
+    this.changeFloatWeight = this.changeFloatWeight.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEnter = this.handleEnter.bind(this);
   }
 
-  changeWeight(event) {
+  changeIntWeight(event) {
     this.setState({
-      weight: event.target.value,
-      disabled: parseInt(event.target.value) >= 0 ? false : true,
+      intWeight: event.target.value,
+      disabled: parseInt(event.target.value + '.' + this.state.floatWeight) >= 0 ? false : true,
+    })
+  }
+
+  changeFloatWeight(event) {
+    this.setState({
+      floatWeight: event.target.value,
+      disabled: parseInt(this.state.intWeight + '.' + event.target.value) >= 0 ? false : true,
     })
   }
 
   handleSubmit(event) {
     const url = '/api/v1/workouts/messages/weights';
     const csrfToken = document.getElementsByName('csrf-token').item(0).content;
+    const weight = parseFloat(this.state.intWeight + '.' + this.state.floatWeight);
 
     return fetch(url, {
       method: 'POST',
@@ -41,7 +51,7 @@ class UserInputWeight extends React.Component {
         "workout_id": gon.workout_id,
         "menu_id": this.props.menuId,
         "exercise_id": this.props.exerciseId,
-        "weight": this.state.weight,
+        "weight": weight,
       })
     })
     .then((response) => {
@@ -69,11 +79,19 @@ class UserInputWeight extends React.Component {
         <div className="col s12">
           重量
         </div>
+
         <div className="col s12 center">
-          <div className="input-field inline">
-            <input type='number' placeholder='挑戦する重さを入力' value={this.state.weight} onChange={this.changeWeight} onKeyPress={this.handleEnter} />
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
+            <input type='number' style={{height: '2rem'}} placeholder='0' value={this.state.intWeight} onChange={this.changeIntWeight} onKeyPress={this.handleEnter} />
+            <span style={{marginLeft: '8px', marginRight: '8px'}}>
+              <p>.</p>
+            </span>
+            <input type='number' style={{height: '2rem'}} placeholder='0' value={this.state.floatWeight} onChange={this.changeFloatWeight} onKeyPress={this.handleEnter} />
+            <span style={{marginLeft: '8px'}}><p>kg</p></span>
           </div>
-          kg
         </div>
 
         <FlatButton label="重さを決定" primary={true} onClick={this.handleSubmit} fullWidth={true} disabled={this.state.disabled} />
@@ -129,7 +147,6 @@ class SkipExerciseButton extends React.Component {
   }
 
   handleModalOpen = () => {
-    console.log('here');
     this.setState({openModal: true});
   };
 
@@ -178,19 +195,28 @@ class SkipExerciseButton extends React.Component {
 class UserInputReps extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      weight: this.props.weight,
+      intWeight: String(this.props.weight).split(".")[0],
+      floatWeight: String(this.props.weight).split(".")[1],
       isLoading: false,
     }
 
-    this.changeWeight = this.changeWeight.bind(this);
+    this.changeIntWeight = this.changeIntWeight.bind(this);
+    this.changeFloatWeight = this.changeFloatWeight.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleSkipExercise = this.handleSkipExercise.bind(this);
   }
 
-  changeWeight(event) {
+  changeIntWeight(event) {
     this.setState({
-      weight: event.target.value,
+      intWeight: event.target.value,
+    })
+  }
+
+  changeFloatWeight(event) {
+    this.setState({
+      floatWeight: event.target.value,
     })
   }
 
@@ -199,6 +225,7 @@ class UserInputReps extends React.Component {
 
     const url = '/api/v1/workouts/messages/reps';
     const csrfToken = document.getElementsByName('csrf-token').item(0).content;
+    const weight = parseFloat(this.state.intWeight + '.' + this.state.floatWeight);
 
     return fetch(url, {
       method: 'POST',
@@ -212,7 +239,7 @@ class UserInputReps extends React.Component {
         "menu_id": this.props.menuId,
         "exercise_id": this.props.exerciseId,
         "reps": event.target.value,
-        "weight": this.state.weight,
+        "weight": weight,
       })
     })
     .then((response) => {
@@ -280,10 +307,17 @@ class UserInputReps extends React.Component {
               重量
             </div>
             <div className="col s12 center">
-              <div className="input-field inline">
-                <input type='number' value={this.state.weight} onChange={this.changeWeight} />
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}>
+                <input type='number' style={{height: '2rem'}} placeholder='0' value={this.state.intWeight} onChange={this.changeIntWeight} onKeyPress={this.handleEnter} />
+                <span style={{marginLeft: '8px', marginRight: '8px'}}>
+                  <p>.</p>
+                </span>
+                <input type='number' style={{height: '2rem'}} placeholder='0' value={this.state.floatWeight} onChange={this.changeFloatWeight} onKeyPress={this.handleEnter} />
+                <span style={{marginLeft: '8px'}}><p>kg</p></span>
               </div>
-              kg
             </div>
           </div>
           <div>
@@ -428,7 +462,6 @@ class UserChooseExercise extends React.Component {
 
     const url = '/api/v1/workouts/messages/exercises/choose';
     const csrfToken = document.getElementsByName('csrf-token').item(0).content;
-    console.log(answer);
 
     return fetch(url, {
       method: 'POST',
