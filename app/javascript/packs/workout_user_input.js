@@ -85,11 +85,11 @@ class UserInputWeight extends React.Component {
             display: 'flex',
             justifyContent: 'center',
           }}>
-            <input type='number' style={{height: '2rem'}} placeholder='0' value={this.state.intWeight} onChange={this.changeIntWeight} onKeyPress={this.handleEnter} />
+            <input type='tel' style={{height: '2rem', maxWidth: '40px'}} placeholder='0' value={this.state.intWeight} onChange={this.changeIntWeight} onKeyPress={this.handleEnter} />
             <span style={{marginLeft: '8px', marginRight: '8px'}}>
               <p>.</p>
             </span>
-            <input type='number' style={{height: '2rem'}} placeholder='0' value={this.state.floatWeight} onChange={this.changeFloatWeight} onKeyPress={this.handleEnter} />
+            <input type='tel' style={{height: '2rem', maxWidth: '40px'}} placeholder='0' value={this.state.floatWeight} onChange={this.changeFloatWeight} onKeyPress={this.handleEnter} />
             <span style={{marginLeft: '8px'}}><p>kg</p></span>
           </div>
         </div>
@@ -317,11 +317,11 @@ class UserInputReps extends React.Component {
                 display: 'flex',
                 justifyContent: 'center',
               }}>
-                <input type='number' style={{height: '2rem'}} placeholder='0' value={this.state.intWeight} onChange={this.changeIntWeight} onKeyPress={this.handleEnter} />
+                <input type='tel' style={{height: '2rem', maxWidth: '40px'}} placeholder='0' value={this.state.intWeight} onChange={this.changeIntWeight} onKeyPress={this.handleEnter} />
                 <span style={{marginLeft: '8px', marginRight: '8px'}}>
                   <p>.</p>
                 </span>
-                <input type='number' style={{height: '2rem'}} placeholder='0' value={this.state.floatWeight} onChange={this.changeFloatWeight} onKeyPress={this.handleEnter} />
+                <input type='tel' style={{height: '2rem', maxWidth: '40px'}} placeholder='0' value={this.state.floatWeight} onChange={this.changeFloatWeight} onKeyPress={this.handleEnter} />
                 <span style={{marginLeft: '8px'}}><p>kg</p></span>
               </div>
             </div>
