@@ -212,6 +212,8 @@ class UserInputReps extends React.Component {
     this.changeFloatWeight = this.changeFloatWeight.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleSkipExercise = this.handleSkipExercise.bind(this);
+    this.plusTwoPointFiveKgWeight = this.plusTwoPointFiveKgWeight.bind(this);
+    this.minusTwoPointFiveKgWeight = this.minusTwoPointFiveKgWeight.bind(this);
   }
 
   changeIntWeight(event) {
@@ -223,6 +225,30 @@ class UserInputReps extends React.Component {
   changeFloatWeight(event) {
     this.setState({
       floatWeight: event.target.value,
+    })
+  }
+
+  minusTwoPointFiveKgWeight() {
+    const weight = parseFloat(this.state.intWeight + '.' + this.state.floatWeight) - 2.5;
+
+    const intWeight = String(weight).split(".")[0];
+    const floatWeight = String(weight).split(".")[1] || 0;
+
+    this.setState({
+      intWeight: intWeight,
+      floatWeight: floatWeight,
+    })
+  }
+
+  plusTwoPointFiveKgWeight(event) {
+    const weight = parseFloat(this.state.intWeight + '.' + this.state.floatWeight) + 2.5;
+
+    const intWeight = String(weight).split(".")[0];
+    const floatWeight = String(weight).split(".")[1] || 0;
+
+    this.setState({
+      intWeight: intWeight,
+      floatWeight: floatWeight,
     })
   }
 
@@ -325,6 +351,20 @@ class UserInputReps extends React.Component {
                 <span style={{marginLeft: '8px'}}><p>kg</p></span>
               </div>
             </div>
+            <FlatButton
+              label="+2.5kg"
+              className="col s6"
+              primary={true}
+              onClick={this.plusTwoPointFiveKgWeight}
+              disabled={this.state.isLoading}
+            />
+            <FlatButton
+              label="-2.5kg"
+              className="col s6"
+              primary={true}
+              onClick={this.minusTwoPointFiveKgWeight}
+              disabled={this.state.isLoading}
+            />
           </div>
           <div>
             <div className="col s12">
