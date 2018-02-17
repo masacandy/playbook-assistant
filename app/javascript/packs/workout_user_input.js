@@ -6,6 +6,60 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 
+class FinishWorkoutButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: false
+    }
+  }
+
+  handleModalOpen = () => {
+    this.setState({openModal: true});
+  };
+
+  handleModalClose = () => {
+    this.setState({openModal: false});
+  };
+
+  render() {
+    const finishPath = "/user/workouts/" + gon.workout_id + "/finish";
+
+    const actions = [
+      <FlatButton
+        label="はい"
+        primary={true}
+        href={finishPath}
+      />,
+      <FlatButton
+        label="キャンセル"
+        primary={false}
+        onClick={this.handleModalClose}
+      />,
+    ];
+
+    return (
+      <div className="FinishWorkoutButton">
+        <RaisedButton label="ワークアウトを終了する"
+          secondary={true}
+          onClick={this.handleModalOpen}
+          fullWidth={true}
+          disabled={this.props.disabled}
+          disabledBackgroundColor={'gray'}
+        />
+
+        <Dialog
+          actions={actions}
+          open={this.state.openModal}
+          onRequestClose={this.handleClose}
+        >
+        本当にワークアウトを終了しますか？
+        </Dialog>
+      </div>
+    );
+  }
+};
+
 class UserInputWeight extends React.Component {
   constructor(props) {
     super(props);
@@ -541,22 +595,26 @@ class UserChooseExercise extends React.Component {
 
   render() {
     return (
-      <div className="UserChooseExercise row">
-        <FlatButton
-          label="はい"
-          primary={true}
-          onClick={this.yesClick}
-          className="col s6"
-          disabled={this.state.isLoading}
-        />
+      <div>
+        <div className="UserChooseExercise row" style={{marginBottom: '8px'}}>
+          <FlatButton
+            label="はい"
+            primary={true}
+            onClick={this.yesClick}
+            className="col s6"
+            disabled={this.state.isLoading}
+          />
 
-        <FlatButton
-          label="違う種目を選択"
-          primary={false}
-          onClick={this.noClick}
-          className="col s6"
-          disabled={this.state.isLoading}
-        />
+          <FlatButton
+            label="違う種目を選択"
+            primary={false}
+            onClick={this.noClick}
+            className="col s6"
+            disabled={this.state.isLoading}
+          />
+        </div>
+
+        <FinishWorkoutButton disabled={this.state.isLoading} />
       </div>
     );
   }
