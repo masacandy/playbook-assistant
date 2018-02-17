@@ -26,42 +26,26 @@ class CreateSwitchWorkoutExerciseMessageService
 
     head_message = UserExerciseLog.where(user_id: user_id, workout_id: workout.id).present? ? '次の' : '最初の'
 
+    previouse_exercise_workout_id = UserExerciseLog.where.not(workout_id: workout.id).where(user_id: user_id, exercise_id: menu_exercise.exercise_id).order(id: :desc).first.workout_id
+
+    last_exercise_logs = UserExerciseLog.where(workout_id: previouse_exercise_workout_id, exercise_id: menu_exercise.exercise_id).order(id: :asc).each_with_object([]) do |user_exercise_log, array|
+      array.push("#{user_exercise_log.weight}kg/#{user_exercise_log.reps}rep")
+    end.join(', ')
+
     messages.push(BaseWorkoutMessage.new(
       "OK!#{head_message}種目は#{exercise.name}です",
       WorkoutMessage.next_action_types[:assistant_message]
     ))
 
-    if last_user_last_exercise_log.weight_up?
-      messages.push(BaseWorkoutMessage.new(
-        "前回#{last_user_last_exercise_log.weight}kgをクリアしました。",
-        WorkoutMessage.next_action_types[:assistant_message]
-      ))
-      messages.push(BaseWorkoutMessage.new(
-        "今回の推奨は#{last_user_last_exercise_log.weight + 2.5}kgです。",
-        WorkoutMessage.next_action_types[:assistant_message]
-      ))
-      messages.push(BaseWorkoutMessage.new(
-        "#{menu_exercise.rep}回#{menu_exercise.set}セット行います。",
-        WorkoutMessage.next_action_types[:assistant_message]
-      ))
-      messages.push(BaseWorkoutMessage.new(
-        "それでは1セット目スタート!何回できたか教えてください。",
-        WorkoutMessage.next_action_types[:user_input_reps]
-      ))
-    else
-      messages.push(BaseWorkoutMessage.new(
-        "前回#{last_user_last_exercise_log.weight}kgでした",
-        WorkoutMessage.next_action_types[:assistant_message]
-      ))
-      messages.push(BaseWorkoutMessage.new(
-        "今回は#{menu_exercise.rep}回#{menu_exercise.set}セットをクリアできるように頑張りましょう",
-        WorkoutMessage.next_action_types[:assistant_message]
-      ))
-      messages.push(BaseWorkoutMessage.new(
-          "それでは1セット目スタート!何回できたか教えてください",
-        WorkoutMessage.next_action_types[:user_input_reps]
-      ))
-    end
+    messages.push(BaseWorkoutMessage.new(
+      "前回の記録は\n#{last_exercise_logs}\nでした",
+      WorkoutMessage.next_action_types[:assistant_message]
+    ))
+
+    messages.push(BaseWorkoutMessage.new(
+        "それでは1セット目スタート!何回できたか教えてください",
+      WorkoutMessage.next_action_types[:user_input_reps]
+    ))
 
     create_assistant_messages
   end
