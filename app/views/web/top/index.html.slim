@@ -1,31 +1,8 @@
 = content_for(:app_bar, javascript_pack_tag('app_bar', 'data-turbolinks-track':'reload'))
 
 - if current_user.present?
-  .container
-    .row
-      .col
-        h1(style="font-size: 2rem") マイページ
-
-        h2(style="font-size: 1.5rem")
-          - if @hours.nil?
-            | 今日も元気にワークアウト
-          - else
-            = "前回のワークアウトから#{@hours}時間経過"
-
-    .row
-      .col
-        h2(style="font-size: 1.5rem") 登録ワークアウト一覧
-      - @menus.each do |menu|
-        .col.s12
-          .card
-            .card-image
-              = image_tag("menus/#{menu.id}.jpg")
-              span.card-title
-                = "#{menu.name}のワークアウト"
-            .card-action
-              = form_with url: workouts_path do |form|
-                = form.hidden_field :menu_id, value: menu.id
-                = form.submit "このワークアウトのスタート", class: "waves-effect waves-light btn-flat", style: "padding-left: 0;color:rgb(0, 188, 212);"
+  = content_for(:javascript_pack_tag, javascript_pack_tag('top_workout_list', 'data-turbolinks-track':'reload'))
+  #top_workout_list
 - else
   .col.s12.valign-wrapper(style="padding-top: 8px")
     = image_tag("top/top.png", class: 'responsive-img center')

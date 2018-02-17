@@ -1,5 +1,10 @@
 class Api::V1::WorkoutsController < Api::V1::BaseController
-  before_action :authenticate_workout_user_from_id!
+  before_action :authenticate_user!
+  before_action :authenticate_workout_user_from_id!, only: %i[show]
+
+  def create
+    @workout = Workout.create!(permit_params)
+  end
 
   def show
     @workout = Workout.find(params[:id])
@@ -23,5 +28,11 @@ class Api::V1::WorkoutsController < Api::V1::BaseController
     end
 
     @workout.workout_messages.reload
+  end
+
+  private
+
+  def permit_params
+    params.require(:workout).permit(:menu_id).merge(user_id: current_user.id)
   end
 end

@@ -7,14 +7,6 @@ class Web::WorkoutsController < Web::BaseController
     gon.title = "#{@workout.menu.name}のワークアウト"
   end
 
-  def create
-    workout = Workout.create!(user_id: current_user.id, menu_id: params[:menu_id])
-    redirect_to workout_path(id: workout.id)
-  rescue => e
-    logger.error e
-    redirect_to root_path
-  end
-
   private
 
   def set_workout

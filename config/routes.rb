@@ -19,8 +19,8 @@ Rails.application.routes.draw do
         resources :test, only: %i[index]
       end
 
-      resources :workouts, only: %[show] do
-        resources :finished_log, only: %[index]
+      resources :workouts, only: %i[create show] do
+        resources :finished_log, only: %i[index]
       end
 
       namespace :workouts do
@@ -30,9 +30,9 @@ Rails.application.routes.draw do
           resources :skip, only: %i[create]
 
           namespace :exercises do
-            resources :unfinished, only: %[index]
-            resources :select, only: %[create]
-            resources :choose, only: %[create]
+            resources :unfinished, only: %i[index]
+            resources :select, only: %i[create]
+            resources :choose, only: %i[create]
           end
         end
       end
