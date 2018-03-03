@@ -40,7 +40,7 @@ class FinishWorkoutButton extends React.Component {
 
     return (
       <div className="FinishWorkoutButton">
-        <RaisedButton label="ワークアウトを終了する"
+        <RaisedButton label="本日のワークアウトを終了する"
           secondary={true}
           onClick={this.handleModalOpen}
           fullWidth={true}
@@ -541,6 +541,8 @@ class UserSelectExercise extends React.Component {
         </select>
 
         <RaisedButton label="決定" primary={true} onClick={this.handleSubmit} fullWidth={true} disabled={this.state.isLoading} disabledBackgroundColor='gray' />
+
+        <FinishWorkoutButton disabled={this.state.isLoading} />
       </div>
     );
   }
