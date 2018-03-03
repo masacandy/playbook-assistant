@@ -36,6 +36,8 @@ Rails.application.routes.draw do
           end
         end
       end
+
+      resources :menus, only: %i[show]
     end
   end
 
