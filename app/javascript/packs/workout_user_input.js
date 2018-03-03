@@ -260,6 +260,8 @@ class UserInputReps extends React.Component {
       intWeight: String(this.props.weight).split(".")[0],
       floatWeight: floatWeight,
       isLoading: false,
+      secondsElapsed: 0,
+      minutesElapsed: 0,
     }
 
     this.changeIntWeight = this.changeIntWeight.bind(this);
@@ -378,6 +380,25 @@ class UserInputReps extends React.Component {
     });
   }
 
+  tick = () => {
+    let seconds = this.state.secondsElapsed + 1;
+    let minutes = this.state.minutesElapsed;
+
+    if (seconds == 60) {
+      seconds = 0;
+      minutes = minutes + 1;
+    }
+
+    this.setState({
+      secondsElapsed: seconds,
+      minutesElapsed: minutes,
+    });
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(this.tick, 1000);
+  }
+
   render() {
     let repsButtonsField = <RepsButtons className="col s12" exerciseReps={this.props.exerciseReps} handleClick={this.handleClick} />
 
@@ -385,11 +406,40 @@ class UserInputReps extends React.Component {
       repsButtonsField = <SendingReps className="center" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}/>
     }
 
+    let seconds;
+    let minutes;
+    if (this.state.secondsElapsed < 10) {
+      seconds = "0" + String(this.state.secondsElapsed);
+    } else {
+      seconds = String(this.state.secondsElapsed);
+    }
+
+    if (this.state.minutesElapsed < 10) {
+      minutes = "0" + String(this.state.minutesElapsed);
+    } else {
+      minutes = String(this.state.minutesElapsed);
+    }
+
     return(
       <div>
         <div className="UserInputReps row">
           <div>
             <div className="col s12">
+              インターバル
+            </div>
+            <div className="col s12 center">
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}>
+
+                {minutes}:{seconds}
+              </div>
+            </div>
+
+            <div className="col s12">
+              <hr style={{borderTopWidth: '0'}}/>
+
               重量
             </div>
             <div className="col s12 center">
