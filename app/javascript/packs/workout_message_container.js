@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import WorkoutMessageList from './workout_message_list';
 import WorkoutUserInput from './workout_user_input';
+import WorkoutImageMessage from './workout_image_message';
 import { applyMiddleware, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -65,6 +66,7 @@ function chooseExercise(json) {
     currentExerciseId: json.current_exercise.id,
     currentExerciseReps: json.current_exercise.rep,
     currentExerciseWeight: json.current_exercise.latest_weight,
+    currentExerciseImage: json.current_exercise.image_url,
   }
 }
 
@@ -107,6 +109,7 @@ function setWorkouts(json) {
     currentExerciseId: json.current_exercise.id,
     currentExerciseReps: json.current_exercise.rep,
     currentExerciseWeight: json.current_exercise.latest_weight,
+    currentExerciseImage: json.current_exercise.image_url,
   }
 }
 
@@ -121,6 +124,7 @@ function formReducer(state, action) {
         currentExerciseId: action.currentExerciseId,
         currentExerciseReps: action.currentExerciseReps,
         currentExerciseWeight: action.currentExerciseWeight,
+        currentExerciseImage: action.currentExerciseImage,
       });
     case 'SEND_WEIGHT':
       return Object.assign({}, state, {
@@ -146,6 +150,7 @@ function formReducer(state, action) {
         currentExerciseWeight: action.currentExerciseWeight,
         currentExerciseId: action.currentExerciseId,
         currentExerciseReps: action.currentExerciseReps,
+        currentExerciseImage: action.currentExerciseImage,
       });
     case 'SELECT_EXERCISE':
       return Object.assign({}, state, {
@@ -199,6 +204,7 @@ function mapStateToProps(state) {
     currentExerciseReps: state.currentExerciseReps,
     currentExerciseWeight: state.currentExerciseWeight,
     openDialog: state.openDialog,
+    currentExerciseImage: state.currentExerciseImage,
   };
 }
 
@@ -312,6 +318,9 @@ class WorkoutMessageContainer extends React.Component {
         >
           <div className="container">
             <WorkoutMessageList workoutMessages={this.props.workoutMessages} />
+            { (this.props.nextActionType == 'user_choose_exercise') &&
+              <WorkoutImageMessage imageUrl={this.props.currentExerciseImage} />
+            }
           </div>
           <div>
             {userInput}

@@ -1,7 +1,7 @@
 class Api::V1::Workouts::Messages::Exercises::SelectController < Api::V1::BaseController
   before_action :authenticate_workout_user!
 
-  CurrentExercise = Struct.new(:id, :rep, :latest_weight)
+  CurrentExercise = Struct.new(:id, :rep, :latest_weight, :image_url)
 
   def create
     @workout = Workout.find(params[:workout_id])
@@ -10,13 +10,13 @@ class Api::V1::Workouts::Messages::Exercises::SelectController < Api::V1::BaseCo
       exercise_id: params[:exercise_id]
     )
 
+    exercise = Exercise.find(params[:exercise_id])
+
     @current_exercise = CurrentExercise.new(
       menu_exercise.exercise_id,
       menu_exercise.rep,
       latest_exercise_weight,
     )
-
-    exercise = Exercise.find(params[:exercise_id])
 
     ActiveRecord::Base.transaction do
       WorkoutMessage.create!(

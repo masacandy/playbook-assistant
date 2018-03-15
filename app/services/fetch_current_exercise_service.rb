@@ -1,7 +1,7 @@
 class FetchCurrentExerciseService
   attr_accessor :workout
 
-  CurrentExercise = Struct.new(:id, :rep, :latest_weight)
+  CurrentExercise = Struct.new(:id, :rep, :latest_weight, :image_url)
 
   def self.call(workout_id:)
     new(workout_id).call
@@ -24,7 +24,8 @@ class FetchCurrentExerciseService
     CurrentExercise.new(
       first_menu_exercise.exercise_id,
       first_menu_exercise.rep,
-      latest_exercise_weight(first_menu_exercise.exercise_id)
+      latest_exercise_weight(first_menu_exercise.exercise_id),
+      first_menu_exercise.exercise.image_url,
     )
   end
 
@@ -65,7 +66,8 @@ class FetchCurrentExerciseService
     CurrentExercise.new(
       menu_exercise.exercise_id,
       menu_exercise.rep,
-      latest_exercise_weight(menu_exercise.exercise_id)
+      latest_exercise_weight(menu_exercise.exercise_id),
+      menu_exercise.exercise.image_url,
     )
   end
 
@@ -81,6 +83,7 @@ class FetchCurrentExerciseService
       current_menu_exercise.exercise_id,
       current_menu_exercise.rep,
       latest_exercise_weight(current_menu_exercise.exercise_id),
+      current_exercise.exercise.image_url,
     )
   end
 end

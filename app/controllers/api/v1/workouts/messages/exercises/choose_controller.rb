@@ -1,7 +1,7 @@
 class Api::V1::Workouts::Messages::Exercises::ChooseController < Api::V1::BaseController
   before_action :authenticate_workout_user!
 
-  CurrentExercise = Struct.new(:id, :rep, :latest_weight)
+  CurrentExercise = Struct.new(:id, :rep, :latest_weight, :image_url)
 
   def create
     @workout = Workout.find(params[:workout_id])
@@ -41,6 +41,7 @@ class Api::V1::Workouts::Messages::Exercises::ChooseController < Api::V1::BaseCo
       recommended_menu_exercise.exercise_id,
       recommended_menu_exercise.rep,
       latest_exercise_weight(recommended_menu_exercise.id),
+      recommended_menu_exercise.exercise.image_url,
     )
 
 

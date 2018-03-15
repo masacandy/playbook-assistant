@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       end
 
       resources :menus, only: %i[show]
+      resources :exercises, only: %i[show]
     end
   end
 
