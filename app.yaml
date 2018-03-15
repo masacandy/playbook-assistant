@@ -9,7 +9,7 @@ automatic_scaling:
     target_utilization: .7
 resources:
   cpu: .2
-  memory_gb: .15
+  memory_gb: .9
 
 includes:
   - app_secret.yaml
