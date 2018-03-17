@@ -228,7 +228,7 @@ class UserInputReps extends React.Component {
           <Divider />
           <div className="row" style={{marginBottom: '1px'}}>
             <div className="col s12">
-              <div className="col s4 center">
+              <div className="col s4" style={{paddingLeft: '0'}}>
                 インターバル
               </div>
               <div className="col s8 center">
