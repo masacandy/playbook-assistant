@@ -83,7 +83,7 @@ class FetchCurrentExerciseService
       current_menu_exercise.exercise_id,
       current_menu_exercise.rep,
       latest_exercise_weight(current_menu_exercise.exercise_id),
-      current_exercise.exercise.image_url,
+      current_menu_exercise.exercise.image_url,
     )
   end
 end
